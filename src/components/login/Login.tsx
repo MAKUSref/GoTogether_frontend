@@ -54,7 +54,7 @@ const Login = ({ navigation }: NavigationProps<Routes.Login>) => {
         <Text style={styles.errorMsg}>{errorMsg}</Text>
 
         <Text style={styles.info}>
-          Don't have an account.{" "}
+          Don't have an account?{" "}
           <Text
             style={{ color: PRIMARY_COLOR_DARK, fontWeight: "bold" }}
             onPress={navigateToRegister}

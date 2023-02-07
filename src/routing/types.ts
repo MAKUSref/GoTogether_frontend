@@ -6,7 +6,8 @@ export enum Routes {
   Map = "Map",
   Login = "Login",
   Register = "Register",
-  RegisterConfirm = "Register Confirm"
+  RegisterConfirm = "Register Confirm",
+  JoinToRoom = "JoinToRoom",
 };
 
 export type RootStackParamList = {
@@ -16,6 +17,7 @@ export type RootStackParamList = {
   [Routes.Login]: undefined,
   [Routes.Register]: undefined,
   [Routes.RegisterConfirm]: { name: string },
+  [Routes.JoinToRoom]: undefined,
 };
 
 export type NavigationProps<T extends Routes> = NativeStackScreenProps<RootStackParamList, T>;

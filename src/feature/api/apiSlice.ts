@@ -13,8 +13,8 @@ const apiSlice = createApi({
   }),
   endpoints: (builder) => ({
     // check
-    getStatus: builder.query<{ status: string }, void>({
-      query: () => "/",
+    getStatus: builder.query<{ status: string }, number>({
+      query: (number) => "/",
     }),
 
     // user

@@ -10,7 +10,7 @@ const ModeSelect = ({ navigation }: NavigationProps<Routes.ModeSelect>) => {
   const sessionState = useAppSelector((state) => state.session);
 
   const dispatch = useAppDispatch();
-  const { data: statusData } = useGetStatusQuery();
+  // const { data: statusData } = useGetStatusQuery();
 
   const handleOpenLoginPage = () => {
     navigation.navigate(Routes.Login);
