@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { RootState } from "../store";
 import { IUser } from "./types";
 // import dotenv from "dotenv";
 
@@ -13,15 +14,18 @@ const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
     baseUrl: API_URL,
-    // prepareHeaders: (headers, { getState }) => {
-    //   // const token = (getState() as RootState).session.token;
+    prepareHeaders: (headers, { getState }) => {
+      const userId = (getState() as RootState).session.userId;
       
-    //   // if (token) {
-    //   //   headers.set("Authorization", `Bearer ${token}`);
-    //   // }
+      console.log(userId);
+      
 
-    //   return headers;
-    // },
+      if (userId) {
+        headers.set("x-user-id", userId);
+      }
+
+      return headers;
+    },
   }),
   endpoints: (builder) => ({
     // check
@@ -57,7 +61,7 @@ const apiSlice = createApi({
     joinToRoom: builder.mutation<{ message: string }, { pin: string, userId: string }>({
       query: ({ pin, userId }) => ({
         url: USER_API_ROOMS+'/join-user',
-        method: 'POST',
+        method: 'PATCH',
         body: { pin, userId }
       })
     }),

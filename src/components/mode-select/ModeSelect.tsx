@@ -41,12 +41,13 @@ const ModeSelect = ({ navigation }: NavigationProps<Routes.ModeSelect>) => {
     }
   }
   const handleJoinRoom = () => {
-    if(roomPin && roomPin.length > 6){
+    if(roomPin && roomPin.length === 5){
       console.log(`Joining to room...`);
-      joinToRoom({pin: roomPin, userId: ""})
+      joinToRoom({pin: roomPin, userId: sessionState.userId || ""})
         .unwrap()
         .then(()=>{
           console.log(`Joined to room ${roomPin}`);
+          navigation.navigate(Routes.Map);
         }).catch((e)=>{
           console.error(`Cannot join due to error: ${e}`);
         });
