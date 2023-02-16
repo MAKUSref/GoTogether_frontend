@@ -1,15 +1,27 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { IUser } from "./types";
+// import dotenv from "dotenv";
 
-const API_URL = 'http://192.168.189.82:4040/api';
-// const API_URL = 'http://10.77.20.199:4040/api';
+// dotenv.config();
+
+const API_URL = `http://192.168.31.254:4040/api`;
 
 const USER_API_PATH = '/user';
+const USER_API_ROOMS = '/room';
 
 const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
     baseUrl: API_URL,
+    // prepareHeaders: (headers, { getState }) => {
+    //   // const token = (getState() as RootState).session.token;
+      
+    //   // if (token) {
+    //   //   headers.set("Authorization", `Bearer ${token}`);
+    //   // }
+
+    //   return headers;
+    // },
   }),
   endpoints: (builder) => ({
     // check
@@ -33,8 +45,24 @@ const apiSlice = createApi({
       })
     }),
 
+
     // room
+    createRoom: builder.mutation<{ message: string }, { name: string }>({
+      query: ({ name }) => ({
+        url: USER_API_ROOMS,
+        method: 'POST',
+        body: { name }
+      })
+    }),
+    joinToRoom: builder.mutation<{ message: string }, { pin: string, userId: string }>({
+      query: ({ pin, userId }) => ({
+        url: USER_API_ROOMS+'/join-user',
+        method: 'POST',
+        body: { pin, userId }
+      })
+    }),
   }),
+  
 });
 
 export const { 
@@ -44,5 +72,9 @@ export const {
   // user
   useLoginMutation,
   useRegisterMutation,
+
+  //rooms
+  useCreateRoomMutation,
+  useJoinToRoomMutation,
 } = apiSlice;
 export default apiSlice;
