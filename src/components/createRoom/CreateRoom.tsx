@@ -47,6 +47,7 @@ const CreateRoom = ({ navigation }: NavigationProps<Routes.CreateRoom>) => {
                   />
                   <Button title="Create own room" onPress={handleCreateRoom} />
                 </Card>
+                <Button title="Go back" onPress={handleReturnToModeSelect} />
                 {/* <Text>UserId: {sessionState.userId}</Text>
                 <Text>UserType: {sessionState.userType}</Text> */}
               </>

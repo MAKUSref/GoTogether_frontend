@@ -49,6 +49,7 @@ const JoinToRoom = ({ navigation }: NavigationProps<Routes.JoinToRoom>) => {
               />
               <Button title="Join to room" onPress={handleJoinRoom}/>
             </Card>
+            <Button title="Go back" onPress={handleReturnToModeSelect} />
             {/* <Text>UserId: {sessionState.userId}</Text>
             <Text>UserType: {sessionState.userType}</Text> */}
           </>
@@ -56,7 +57,6 @@ const JoinToRoom = ({ navigation }: NavigationProps<Routes.JoinToRoom>) => {
           <>
             <Text style={[styles.textCenter, {marginBottom: 60}]}>Here will be image</Text>
             <Text h4 style={[styles.textCenter, {marginBottom: 20}]}>You have to login first</Text>
-            <Button title="Go back" onPress={handleReturnToModeSelect} />
           </>
         )}
       </View>
