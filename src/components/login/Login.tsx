@@ -6,6 +6,7 @@ import { useAppDispatch } from "../../feature/hooks";
 import { setUser } from "../../feature/session/sessionSlice";
 import { NavigationProps, Routes } from "../../routing/types";
 import { PRIMARY_COLOR_DARK } from "../../styles/colors";
+import Navbar from "../navbar/Navbar";
 
 const Login = ({ navigation }: NavigationProps<Routes.Login>) => {
   const [loginText, setLoginText] = useState<string>("");
@@ -21,7 +22,6 @@ const Login = ({ navigation }: NavigationProps<Routes.Login>) => {
   };
 
   const handleLogin = () => {
-    console.log(loginText);
 
     login({ login: loginText, password })
       .unwrap()
@@ -64,6 +64,7 @@ const Login = ({ navigation }: NavigationProps<Routes.Login>) => {
         </Text>
         <Button title="Login" onPress={handleLogin} />
       </View>
+      <Navbar/>
     </View>
   );
 };

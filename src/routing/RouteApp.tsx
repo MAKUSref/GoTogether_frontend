@@ -35,11 +35,7 @@ const RouteApp = () => (
     <Stack.Screen
       name={Routes.ModeSelect}
       component={ModeSelect}
-      options={{
-        title: "",
-        headerShadowVisible: false,
-        headerLeft: () => <></>
-      }}
+      options={{ headerShown: false }}
     />
     <Stack.Screen
       name={Routes.Map}
@@ -49,20 +45,12 @@ const RouteApp = () => (
     <Stack.Screen 
       name={Routes.Login}
       component={Login}
-      options={{
-        headerShadowVisible: false,
-        headerLeft: () => <></>,
-        title: ""
-      }}
+      options={{ headerShown: false }}
     />
     <Stack.Screen 
       name={Routes.Register}
       component={Register}
-      options={{
-        headerShadowVisible: false,
-        headerLeft: () => <></>,
-        title: ""
-      }}
+      options={{ headerShown: false }}
     />
     <Stack.Screen 
       name={Routes.RegisterConfirm}
@@ -72,7 +60,7 @@ const RouteApp = () => (
     <Stack.Screen 
       name={Routes.JoinToRoom}
       component={JoinToRoom}
-      // options={{ headerShown: false }}
+      options={{ headerShown: false }}
     />
   </Stack.Navigator>
 );

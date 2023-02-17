@@ -7,6 +7,8 @@ import { useAppDispatch, useAppSelector } from "../../feature/hooks";
 import { logout } from "../../feature/session/sessionSlice";
 import { NavigationProps, Routes } from "../../routing/types";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import Navbar from "../navbar/Navbar";
+
 
 const ModeSelect = ({ navigation }: NavigationProps<Routes.ModeSelect>) => {
 
@@ -91,6 +93,7 @@ const ModeSelect = ({ navigation }: NavigationProps<Routes.ModeSelect>) => {
           </>
         )}
       </View>
+      {/* <Navbar/> */}
     </View>
   );
 };
