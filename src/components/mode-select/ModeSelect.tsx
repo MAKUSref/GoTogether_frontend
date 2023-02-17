@@ -93,7 +93,7 @@ const ModeSelect = ({ navigation }: NavigationProps<Routes.ModeSelect>) => {
           </>
         )}
       </View>
-      {/* <Navbar/> */}
+      <Navbar/>
     </View>
   );
 };

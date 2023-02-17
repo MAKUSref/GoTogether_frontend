@@ -26,7 +26,7 @@ const Login = ({ navigation }: NavigationProps<Routes.Login>) => {
     login({ login: loginText, password })
       .unwrap()
       .then((data) => {
-        dispatch(setUser({ userId: data.user.id, userType: data.user.type }));
+        dispatch(setUser({ userId: data.user.id, username: data.user.name, userType: data.user.type }));
         navigation.navigate(Routes.ModeSelect);
       })
       .catch((err) => {
@@ -64,7 +64,7 @@ const Login = ({ navigation }: NavigationProps<Routes.Login>) => {
         </Text>
         <Button title="Login" onPress={handleLogin} />
       </View>
-      <Navbar/>
+      {/* <Navbar/> */}
     </View>
   );
 };
