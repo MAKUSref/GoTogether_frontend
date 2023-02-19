@@ -4,8 +4,10 @@ import {
   StyleSheet,
   Dimensions,
   GestureResponderEvent,
+  ScrollView,
 } from "react-native";
 import { Text } from "react-native-elements";
+import { useFetchRoomsQuery } from "../../feature/api/apiSlice";
 import { useAppSelector } from "../../feature/hooks";
 import { NavigationProps, Routes } from "../../routing/types";
 import {
@@ -14,18 +16,27 @@ import {
   PRIMARY_COLOR_LIGHT,
   PRIMARY_COLOR_LIGHT_2,
 } from "../../styles/colors";
+import RoomButton from "./RoomButton";
 import UserInfo from "./UserInfo";
 const screenHeight = Dimensions.get("screen").height;
 const screenWidth = Dimensions.get("screen").width;
+
 const Navbar = () => {
+
+  const { data = { room: [] } } = useFetchRoomsQuery();
+  // console.log(data.room);
+
   const minNavbarPosition = 60;
   const navbarMaxHeight = screenHeight * 0.5;
   const maxMaskOpacity = .4;
+
+
   const [navbarPosition, setNavbarPosition] = useState<number>(screenHeight - minNavbarPosition);
   const [maskOpacity, setMaskOpacity] = useState<number>(0);
   let hideMask: boolean = true;
 
   const sessionState = useAppSelector((state) => state.session);
+
 
 
   const handleTouch = (e: GestureResponderEvent) => {
@@ -41,7 +52,8 @@ const Navbar = () => {
 
 
     setNavbarPosition(newNavbarPosition);
-    updateMask();
+    const newMaskOpacity = (navbarPosition - (screenHeight - minNavbarPosition)) / ((screenHeight - navbarMaxHeight) - (screenHeight - minNavbarPosition));
+    setMaskOpacity(newMaskOpacity);
   };
 
   const snapNavbar = () => {
@@ -62,11 +74,6 @@ const Navbar = () => {
     setMaskOpacity(1);
   }
 
-  const updateMask = () => {
-    const newMaskOpacity = (navbarPosition - (screenHeight - minNavbarPosition)) / ((screenHeight - navbarMaxHeight) - (screenHeight - minNavbarPosition));
-    setMaskOpacity(newMaskOpacity);
-  }
-
 
 
   return (
@@ -83,6 +90,10 @@ const Navbar = () => {
           <UserInfo userId={sessionState.userId || "Guest"} username={sessionState.username || ""}/>
           <View style={styles.divider} />
         </View>
+        <ScrollView>
+          {data.room.map((r, i)=> <RoomButton key={i} roomId={r.id} host={r.hosts[0]} name={r.name}/>)}
+
+        </ScrollView>
       </View>
     </View>
   );
