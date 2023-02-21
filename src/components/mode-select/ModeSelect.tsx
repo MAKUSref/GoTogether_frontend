@@ -29,55 +29,37 @@ const ModeSelect = ({ navigation }: NavigationProps<Routes.ModeSelect>) => {
   };
 
   const handleCreateRoom = () => {
-    if(roomName && roomName.length > 6){
-    console.log(`Creating new room...`);
-    createRoom({name: roomName})
-      .unwrap()
-      .then(()=>{
-        console.log(`Room ${roomName} created`);
-      }).catch((e)=>{
-        console.error(`Room not created due to error: ${e}`);
-      });
-    }
+    navigation.navigate(Routes.CreateRoom);
   }
-  const handleJoinRoom = () => {
-    if(roomPin && roomPin.length === 5){
-      console.log(`Joining to room...`);
-      joinToRoom({pin: roomPin, userId: sessionState.userId || ""})
-        .unwrap()
-        .then(()=>{
-          console.log(`Joined to room ${roomPin}`);
-          navigation.navigate(Routes.Map);
-        }).catch((e)=>{
-          console.error(`Cannot join due to error: ${e}`);
-        });
-      }
+  const handleJoinToRoom = () => {
+    navigation.navigate(Routes.JoinToRoom);
   }
+
   return (
     <View style={styles.container}>
       <View style={styles.col}>
         {sessionState.userId ? (
           <>
             <Card>
-              <Card.Title>Join room</Card.Title>
+              {/* <Card.Title>Join room</Card.Title>
               <Card.Divider />
               <Input
               leftIcon={<Icon name="link" size={20} />}
               placeholder="Enter Code"
               onChangeText={setRoomPin}
               keyboardType="decimal-pad"
-              />
-              <Button title="Join" onPress={handleJoinRoom}/>
+              /> */}
+              <Button title="Join to room" onPress={handleJoinToRoom}/>
             </Card>
             <Card>
-              <Card.Title>Create new room</Card.Title>
+              {/* <Card.Title>Create new room</Card.Title>
               <Card.Divider />
               <Input
               leftIcon={<Icon name="map" size={20} />}
               onChangeText={setRoomName}
               placeholder="Room's name"
-              />
-              <Button title="Create" onPress={handleCreateRoom} />
+              /> */}
+              <Button title="Create own room" onPress={handleCreateRoom} />
             </Card>
             <Button title="Logout" onPress={handleLogut} containerStyle={styles.button}/>
             {/* <Text>UserId: {sessionState.userId}</Text>
