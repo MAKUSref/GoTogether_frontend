@@ -5,8 +5,7 @@ import { IUser } from "./types";
 
 // dotenv.config();
 
-// const API_URL = `http://192.168.31.254:4040/api`;
-const API_URL = `http://192.168.68.102:4040/api`;
+const API_URL = `http://192.168.0.24:4040/api`;
 
 const USER_API_PATH = '/user';
 const USER_API_ROOMS = '/room';

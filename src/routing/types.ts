@@ -8,6 +8,7 @@ export enum Routes {
   Register = "Register",
   RegisterConfirm = "Register Confirm",
   JoinToRoom = "JoinToRoom",
+  CreateRoom = "CreateRoom",
 };
 
 export type RootStackParamList = {
@@ -18,6 +19,7 @@ export type RootStackParamList = {
   [Routes.Register]: undefined,
   [Routes.RegisterConfirm]: { name: string },
   [Routes.JoinToRoom]: undefined,
+  [Routes.CreateRoom]: undefined,
 };
 
 export type NavigationProps<T extends Routes> = NativeStackScreenProps<RootStackParamList, T>;
