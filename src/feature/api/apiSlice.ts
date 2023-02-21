@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../store";
-import { IUser } from "./types";
+import { IUser, RoomsFetchResponse } from "./types";
 // import dotenv from "dotenv";
 
 // dotenv.config();
@@ -16,8 +16,6 @@ const apiSlice = createApi({
     baseUrl: API_URL,
     prepareHeaders: (headers, { getState }) => {
       const userId = (getState() as RootState).session.userId;
-      
-      console.log(userId);
       
 
       if (userId) {
@@ -51,6 +49,9 @@ const apiSlice = createApi({
 
 
     // room
+    fetchRooms: builder.query<RoomsFetchResponse, void>({
+      query: () => USER_API_ROOMS,
+    }),
     createRoom: builder.mutation<{ message: string }, { name: string }>({
       query: ({ name }) => ({
         url: USER_API_ROOMS,
@@ -78,6 +79,7 @@ export const {
   useRegisterMutation,
 
   //rooms
+  useFetchRoomsQuery,
   useCreateRoomMutation,
   useJoinToRoomMutation,
 } = apiSlice;

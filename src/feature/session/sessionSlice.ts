@@ -12,12 +12,14 @@ const sessionSlice = createSlice({
   name,
   initialState,
   reducers: {
-    setUser(state, action: PayloadAction<{ userId: string, userType: USER_TYPE}>) {
+    setUser(state, action: PayloadAction<{ userId: string, username: string, userType: USER_TYPE}>) {
       state.userId = action.payload.userId;
+      state.username = action.payload.username;
       state.userType = action.payload.userType;
     },
     logout(state) {
       state.userId = undefined;
+      state.username = undefined;
       state.userType = USER_TYPE.Guest;
     }
   }
