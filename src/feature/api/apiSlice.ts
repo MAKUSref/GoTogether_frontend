@@ -1,11 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../store";
-import { IUser, RoomsFetchResponse } from "./types";
+import { IUser, MyRoomsFetchResponse, RoomsFetchResponse } from "./types";
 // import dotenv from "dotenv";
 
 // dotenv.config();
 
-const API_URL = `http://192.168.0.24:4040/api`;
+const API_URL = `http://10.77.9.111:4040/api`;
 
 const USER_API_PATH = '/user';
 const USER_API_ROOMS = '/room';
@@ -52,6 +52,9 @@ const apiSlice = createApi({
     fetchRooms: builder.query<RoomsFetchResponse, void>({
       query: () => USER_API_ROOMS,
     }),
+    fetchMyRooms: builder.query<MyRoomsFetchResponse, void>({
+      query: () => `${USER_API_ROOMS}/my-rooms`,
+    }),
     createRoom: builder.mutation<{ message: string }, { name: string }>({
       query: ({ name }) => ({
         url: USER_API_ROOMS,
@@ -61,7 +64,7 @@ const apiSlice = createApi({
     }),
     joinToRoom: builder.mutation<{ message: string }, { pin: string, userId: string }>({
       query: ({ pin, userId }) => ({
-        url: USER_API_ROOMS+'/join-user',
+        url: `${USER_API_ROOMS}/join-user`,
         method: 'PATCH',
         body: { pin, userId }
       })
@@ -80,6 +83,7 @@ export const {
 
   //rooms
   useFetchRoomsQuery,
+  useFetchMyRoomsQuery,
   useCreateRoomMutation,
   useJoinToRoomMutation,
 } = apiSlice;

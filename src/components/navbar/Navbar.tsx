@@ -7,7 +7,7 @@ import {
   ScrollView,
 } from "react-native";
 import { Text } from "react-native-elements";
-import { useFetchRoomsQuery } from "../../feature/api/apiSlice";
+import { useFetchMyRoomsQuery } from "../../feature/api/apiSlice";
 import { useAppSelector } from "../../feature/hooks";
 import { NavigationProps, Routes } from "../../routing/types";
 import {
@@ -16,16 +16,14 @@ import {
   PRIMARY_COLOR_LIGHT,
   PRIMARY_COLOR_LIGHT_2,
 } from "../../styles/colors";
-import RoomButton from "./RoomButton";
+import RoomCard from "./RoomCard";
 import UserInfo from "./UserInfo";
 const screenHeight = Dimensions.get("screen").height;
 const screenWidth = Dimensions.get("screen").width;
 
 const Navbar = () => {
 
-  const { data = { room: [] } } = useFetchRoomsQuery();
-  // console.log(data.room);
-
+  const { data: rooms = { host: [], user: [], request: [] } } = useFetchMyRoomsQuery();
   const minNavbarPosition = 60;
   const navbarMaxHeight = screenHeight * 0.5;
   const maxMaskOpacity = .4;
@@ -77,21 +75,27 @@ const Navbar = () => {
 
 
   return (
-    <View style={styles.mainContainer}>
+    <View style={styles.mainContainer} >
       <View style={[styles.mask, { opacity: maskOpacity * maxMaskOpacity, display: maskOpacity===0 ? "none" : "flex"}]} onTouchEnd={hideNavbar}/>
       <View
         style={[
           styles.navbarContainer,
+          styles.shadowProp,
           { height: navbarMaxHeight, top: navbarPosition },
         ]}
+        
       >
-        <View style={styles.dragHandle} onTouchMove={handleTouch} onTouchEnd={snapNavbar}></View>
+        <View style={styles.dragHandleContainer} onTouchMove={handleTouch} onTouchEnd={snapNavbar}> 
+          <View style={styles.dragHandle}/>
+        </View>
         <View style={[styles.navbarContent,{opacity: maskOpacity}]}>
           <UserInfo userId={sessionState.userId || "Guest"} username={sessionState.username || ""}/>
           <View style={styles.divider} />
         </View>
-        <ScrollView>
-          {data.room.map((r, i)=> <RoomButton key={i} roomId={r.id} host={r.hosts[0]} name={r.name}/>)}
+        <ScrollView style={{width: "100%"}}>
+          {rooms.host.map((r, i)=> <RoomCard key={i} roomId={r.id} host={r.hosts[0]} name={r.name} type="host"/>)}
+          {rooms.user.map((r, i)=> <RoomCard key={i} roomId={r.id} host={r.hosts[0]} name={r.name} type="user"/>)}
+          {rooms.request.map((r, i)=> <RoomCard key={i} roomId={r.id} host={r.hosts[0]} name={r.name} type="request"/>)}
 
         </ScrollView>
       </View>
@@ -101,6 +105,9 @@ const Navbar = () => {
 
 const styles = StyleSheet.create({
   mainContainer: {
+
+
+
     height: "100%",
     width: "100%",
     position: "absolute",
@@ -115,7 +122,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   navbarContainer: {
-    backgroundColor: PRIMARY_COLOR_LIGHT_2,
+    backgroundColor: "#FFFFFF",
     color: PRIMARY_COLOR_DARK,
     position: "absolute",
     height: "50%",
@@ -127,10 +134,22 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     // justifyContent: "center"
     alignItems: "center",
+
+    // borderWidth: 1,
+    // borderColor: "#aaa"
+  },
+  dragHandleContainer: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    // backgroundColor: "red",
+    paddingTop: 10,
+    paddingBottom: 10,
   },
   dragHandle: {
     width: "30%",
-    height: 17,
+    height: 7,
     backgroundColor: PRIMARY_COLOR_DARK,
     marginTop: 10,
     borderRadius: 50,
@@ -146,7 +165,18 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: PRIMARY_COLOR_DARK,
     width: "100%"
-  }
+  },
+  shadowProp: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 10,
+      height: 50,
+    },
+    shadowOpacity: 100,
+    shadowRadius: 13.84,
+    
+    elevation: 12,
+  },
 });
 
 export default Navbar;

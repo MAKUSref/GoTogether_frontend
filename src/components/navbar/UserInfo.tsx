@@ -1,5 +1,10 @@
 import { View, Text, StyleSheet, Image } from "react-native";
 // import { Image } from "react-native-elements";
+import { Icon } from '@rneui/themed';
+import { logout } from "../../feature/session/sessionSlice";
+import { useAppDispatch, useAppSelector } from "../../feature/hooks";
+import { NavigationProps, Routes } from "../../routing/types";
+import { useNavigation } from "@react-navigation/native";
 
 interface UserInfoProps {
   username: string,
@@ -7,6 +12,12 @@ interface UserInfoProps {
 }
 
 const UserInfo = ({username, userId}: UserInfoProps) => {
+  const dispatch = useAppDispatch();
+  const navigation = useNavigation<any>();
+  const handleLogut = () => {
+    dispatch(logout());
+    navigation.navigate(Routes.Login);
+  };
 
 
   return (
@@ -15,8 +26,13 @@ const UserInfo = ({username, userId}: UserInfoProps) => {
 
     <Image source={{uri: "https://thispersondoesnotexist.com/image"}} style={styles.userAvatar}/>
     <View>
-    <Text style={[styles.name, {fontWeight: "600"}]}>{username}</Text>
-    <Text style={styles.name}>{userId}</Text>
+      <View style={styles.nameRow} >
+        <Text style={[styles.name, {fontWeight: "600"}]}>{username}</Text>
+        <Icon name='exit-to-app' onPress={handleLogut} />
+      </View>
+      <View style={styles.nameRow} >
+        <Text style={styles.name}>{userId}</Text>
+      </View>
     </View>
   </View>
   );
@@ -37,7 +53,13 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   name: {
-    marginHorizontal: 20
+    backfaceVisibility: "visible",
+  },
+  nameRow: {
+    marginHorizontal: 20,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
   }
 })
 
