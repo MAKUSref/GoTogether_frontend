@@ -24,8 +24,6 @@ const screenWidth = Dimensions.get("screen").width;
 const Navbar = () => {
 
   const { data: rooms = { host: [], user: [], request: [] } } = useFetchMyRoomsQuery();
-  console.log(rooms);
-
   const minNavbarPosition = 60;
   const navbarMaxHeight = screenHeight * 0.5;
   const maxMaskOpacity = .4;
@@ -96,8 +94,8 @@ const Navbar = () => {
         </View>
         <ScrollView style={{width: "100%"}}>
           {rooms.host.map((r, i)=> <RoomCard key={i} roomId={r.id} host={r.hosts[0]} name={r.name} type="host"/>)}
-          {rooms.host.map((r, i)=> <RoomCard key={i} roomId={r.id} host={r.hosts[0]} name={r.name} type="user"/>)}
-          {rooms.host.map((r, i)=> <RoomCard key={i} roomId={r.id} host={r.hosts[0]} name={r.name} type="request"/>)}
+          {rooms.user.map((r, i)=> <RoomCard key={i} roomId={r.id} host={r.hosts[0]} name={r.name} type="user"/>)}
+          {rooms.request.map((r, i)=> <RoomCard key={i} roomId={r.id} host={r.hosts[0]} name={r.name} type="request"/>)}
 
         </ScrollView>
       </View>
