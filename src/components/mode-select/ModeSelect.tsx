@@ -81,7 +81,7 @@ const ModeSelect = ({ navigation }: NavigationProps<Routes.ModeSelect>) => {
               />
               <Button title="Create" onPress={handleCreateRoom} />
             </Card>
-            <Button title="Logout" onPress={handleLogut} containerStyle={styles.button}/>
+            {/* <Button title="Logout" onPress={handleLogut} containerStyle={styles.button}/> */}
             {/* <Text>UserId: {sessionState.userId}</Text>
             <Text>UserType: {sessionState.userType}</Text> */}
           </>
@@ -93,7 +93,7 @@ const ModeSelect = ({ navigation }: NavigationProps<Routes.ModeSelect>) => {
           </>
         )}
       </View>
-      <Navbar/>
+      {sessionState.userId ? <Navbar/> : <></>}
     </View>
   );
 };

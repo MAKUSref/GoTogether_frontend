@@ -24,3 +24,9 @@ export interface Room {
 export interface RoomsFetchResponse {
   room: Room[]
 }
+
+export interface MyRoomsFetchResponse {
+  host: Room[],
+  user: Room[],
+  request: Room[],
+}
