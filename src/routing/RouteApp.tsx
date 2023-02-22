@@ -10,6 +10,7 @@ import Login from '../components/login/Login';
 import RegisterConfirm from '../components/register/RegisterConfirm';
 import JoinToRoom from '../components/joinToRoom/JoinToRoom';
 import { Text } from "react-native-elements";
+import CreateRoom from "../components/createRoom/CreateRoom";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -61,6 +62,11 @@ const RouteApp = () => (
       name={Routes.JoinToRoom}
       component={JoinToRoom}
       options={{ headerShown: false }}
+    />
+    <Stack.Screen 
+      name={Routes.CreateRoom}
+      component={CreateRoom}
+      // options={{ headerShown: false }}
     />
   </Stack.Navigator>
 );
