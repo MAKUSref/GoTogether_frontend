@@ -8,19 +8,21 @@ import { LocationObject } from "expo-location";
 import Loader from "../lib/loader/Loader";
 import {
   useFetchRoomByPinQuery,
+  useFetchUsersInfoFromRoomQuery,
   useJoinToRoomMutation,
   useLeaveRoomMutation,
+  useUpdateCoordsMutation,
 } from "../../feature/api/apiSlice";
 import { Room } from "../../feature/api/types";
 import { Button } from "react-native-elements";
-import { getColorFromUUID, PRIMARY_COLOR_DARK } from "../../styles/colors";
+import { getColorFromUUID } from "../../styles/colors";
 import Navbar from "../navbars/Navbar";
 import RoomInfo from "../navbars/mapNavbar/RoomInfo";
 import UserList from "../navbars/mapNavbar/UserList";
 import SpeechButton from "./SpeechButton";
 
 const CHECK_USER_STATUS_TIMEOUT = 2000;
-const LOCATION_TIMEOUT = 1500;
+const LOCATION_TIMEOUT = 1000;
 
 const LOADER_MSG_LOADING = "Loading...";
 const LOADER_MSG_WAIT_FOR_ACCEPT = "Waiting for accept your request...";
@@ -30,9 +32,7 @@ const LOADER_MSG_NO_IN_ROOM =
 const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
   const { roomPin } = route.params;
 
-  const [locationIntervalId, setLocationIntervalId] = useState<
-    NodeJS.Timer | undefined
-  >();
+  const [locationIntervalId, setLocationIntervalId] = useState<NodeJS.Timer | undefined>();
   const [iterator, setIterator] = useState<number>(0);
   const [location, setLocation] = useState<LocationObject | null>(null);
   const [loaderMsg, setLoaderMsg] = useState<string>(LOADER_MSG_LOADING);
@@ -40,8 +40,16 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
   const sessionsState = useAppSelector((state) => state.session);
 
   const { data: roomsRes } = useFetchRoomByPinQuery({ roomPin, i: iterator });
+  const { data: usersInfo } = useFetchUsersInfoFromRoomQuery(roomPin);
   const [joinToRoom] = useJoinToRoomMutation();
   const [leaveRoom] = useLeaveRoomMutation();
+  const [sendCoords] = useUpdateCoordsMutation();
+
+  const filteredUsers = useMemo(() => {
+    const users = usersInfo?.user.filter((user) => user.id !== sessionsState.userId);
+
+    return users ?? [];
+  }, [usersInfo]);
 
   const userColor = useMemo(() => {
     return getColorFromUUID(sessionsState.userId ?? "0");
@@ -54,6 +62,7 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
       return roomInfo;
     }
   }, [roomsRes]);
+
   const avaiableToSeeMap: boolean = useMemo(() => {
     if (roomInfo && sessionsState.userId) {
       const userInHosts = roomInfo.hosts.includes(sessionsState.userId);
@@ -98,9 +107,16 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
 
       setLocation(location);
     })();
+
+    console.log(usersInfo);
   }, []);
 
+  useEffect(() => {
+    console.log(usersInfo);
+  }, [usersInfo])
+
   // intervals
+  // Check user status
   useEffect(() => {
     const id = setInterval(() => {
       setIterator((prev) => prev + 1);
@@ -111,6 +127,7 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
     };
   }, []);
 
+  // get new location
   useEffect(() => {
     let id: NodeJS.Timer | undefined;
 
@@ -118,6 +135,12 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
       id = setInterval(async () => {
         let location = await Location.getCurrentPositionAsync({});
         setLocation(location);
+        sendCoords({
+          lat: location.coords.latitude,
+          long: location.coords.longitude,
+          radius: 1,
+          timestamp: Date.now()
+        })
       }, LOCATION_TIMEOUT);
     }
 
@@ -145,17 +168,56 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
                 longitude: location.coords.longitude,
               }}
             >
-              <View>
-                <Text>Marker</Text>
+              <View style={[styles.markerBg]}>
+                <View style={[styles.marker, {
+                  backgroundColor: userColor
+                }]}>
+                </View>
               </View>
             </Marker>
+
+            {filteredUsers.map((user, i) => {
+              const userColor = getColorFromUUID(user.id);
+
+              if (!user.coords) return;
+              
+              return (
+                <Marker
+                  key={i}
+                  coordinate={{
+                    latitude: user.coords.lat,
+                    longitude: user.coords.long,
+                  }}
+                >
+                  <View style={[styles.markerBg]}>
+                    <View style={[styles.marker, {
+                      backgroundColor: userColor
+                    }]}>
+                    </View>
+                  </View>
+                </Marker>
+              );
+            })}
+
           </MapView>
+
           <View style={[styles.usersContainer]}>
             <View style={[styles.userAvatar, { backgroundColor: userColor }]}>
               <Text style={[styles.avatarText]}>
                 {sessionsState.username?.[0].toUpperCase()}
               </Text>
             </View>
+
+            {filteredUsers.map((user, i) => {
+              const userColor = getColorFromUUID(user.id);
+              return (
+                <View key={i} style={[styles.userAvatar, { backgroundColor: userColor }, styles.userAvatarSmall]}>
+                  <Text style={[styles.avatarText]}>
+                    {user.name[0].toUpperCase()}
+                  </Text>
+                </View>
+              );
+            })}
           </View>
           <SpeechButton/>
           {roomInfo && (
@@ -213,6 +275,8 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   usersContainer: {
+    flexDirection: "row",
+    alignItems: 'center',
     position: "absolute",
     paddingTop: 40,
     top: 0,
@@ -220,7 +284,8 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   userAvatar: {
-    margin: 10,
+    marginVertical: 10,
+    marginHorizontal: 4,
     width: 60,
     height: 60,
     borderRadius: 30,
@@ -228,11 +293,30 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  userAvatarSmall: {
+    width: 50,
+    height: 50,
+  },
   avatarText: {
     color: "white",
     fontSize: 26,
     fontWeight: "bold",
     // textAlign: "center"
+  },
+  markerBg: {
+    width: 15,
+    height: 15,
+    borderRadius: 10,
+    backgroundColor: 'white',
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    opacity: 0.8,
+  },
+  marker: {
+    width: 12,
+    height: 12,
+    borderRadius: 10,
   },
 });
 

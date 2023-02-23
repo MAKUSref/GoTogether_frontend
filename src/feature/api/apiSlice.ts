@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../store";
-import { IUser, MyRoomsFetchResponse, RoomsFetchResponse } from "./types";
+import { Coords, IUser, MyRoomsFetchResponse, RoomsFetchResponse } from "./types";
 // import dotenv from "dotenv";
 
 // dotenv.config();
@@ -25,7 +25,7 @@ const apiSlice = createApi({
       return headers;
     },
   }),
-  tagTypes: ["room", "user"],
+  tagTypes: ["room", "user", "coords"],
   endpoints: (builder) => ({
     // check
     getStatus: builder.query<{ status: string }, number>({
@@ -48,7 +48,14 @@ const apiSlice = createApi({
         body: { name, login, password }
       })
     }),
-
+    updateCoords: builder.mutation<{ message: string }, Coords>({
+      query: (coords) => ({
+        url: `${USER_API_PATH}/coords`,
+        method: 'PATCH',
+        body: { ...coords }
+      }),
+      invalidatesTags: ['coords']
+    }),
 
     // room
     fetchRoom: builder.query<RoomsFetchResponse, { roomId: string, i?: number }>({
@@ -66,6 +73,10 @@ const apiSlice = createApi({
     fetchMyRooms: builder.query<MyRoomsFetchResponse, void>({
       query: () => `${USER_API_ROOMS}/my-rooms`,
       providesTags: ["room"]
+    }),
+    fetchUsersInfoFromRoom: builder.query<{ user: IUser[] }, string>({
+      query: (roomPin) => `${USER_API_ROOMS}/filter/room-users-info/${roomPin}`,
+      providesTags: ['user', 'coords']
     }),
     createRoom: builder.mutation<{ message: string }, { name: string }>({
       query: ({ name }) => ({
@@ -144,12 +155,14 @@ export const {
   // user
   useLoginMutation,
   useRegisterMutation,
+  useUpdateCoordsMutation,
 
   //rooms
   useFetchRoomQuery,
   useFetchRoomByPinQuery,
   useFetchRoomsQuery,
   useFetchMyRoomsQuery,
+  useFetchUsersInfoFromRoomQuery,
   useCreateRoomMutation,
   useJoinToRoomMutation,
   useDeleteRequestedMutation,
