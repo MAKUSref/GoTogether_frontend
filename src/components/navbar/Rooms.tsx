@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ScrollView, View } from "react-native";
 import { useFetchMyRoomsQuery } from "../../feature/api/apiSlice";
 import RoomCard from "./RoomCard";
+import { ROOM_USER_TYPE } from './types';
 
 const Rooms = () => {
   const [index, setIndex] = useState(0);
@@ -15,7 +16,7 @@ const Rooms = () => {
         onChange={(e) => setIndex(e)}
         indicatorStyle={{
           backgroundColor: "white",
-          height: 2,
+          // height: 2,
         }}
         variant="primary"
       >
@@ -24,19 +25,19 @@ const Rooms = () => {
         <Tab.Item title="Requested" titleStyle={{ fontSize: 12 }} />
       </Tab>
       <TabView value={index} onChange={setIndex} animationType="spring">
-        <TabView.Item style={{ backgroundColor: "#cca", width: "100%" }}>
+        <TabView.Item style={{ width: "100%" }}>
         <ScrollView>
-          {roomsLists.host.map((r, i)=> <RoomCard key={i} roomId={r.id} host={r.hosts[0]} name={r.name} type="host"/>)}
+          {roomsLists.host.map((r, i)=> <RoomCard key={i} roomPin={r.pin} host={r.hosts[0]} name={r.name} type={ROOM_USER_TYPE.host}/>)}
         </ScrollView>
         </TabView.Item>
-        <TabView.Item style={{ backgroundColor: "#ddd", width: "100%" }}>
+        <TabView.Item style={{ width: "100%" }}>
           <ScrollView>
-            {roomsLists.host.map((r, i)=> <RoomCard key={i} roomId={r.id} host={r.hosts[0]} name={r.name} type="user"/>)}
+            {roomsLists.user.map((r, i)=> <RoomCard key={i} roomPin={r.pin} host={r.hosts[0]} name={r.name} type={ROOM_USER_TYPE.user} />)}
           </ScrollView>
         </TabView.Item>
-        <TabView.Item style={{ backgroundColor: "#ccc", width: "100%" }}>
+        <TabView.Item style={{ width: "100%" }}>
           <ScrollView>
-            {roomsLists.host.map((r, i)=> <RoomCard key={i} roomId={r.id} host={r.hosts[0]} name={r.name} type="request"/>)}
+            {roomsLists.request.map((r, i)=> <RoomCard key={i} roomPin={r.pin} host={r.hosts[0]} name={r.name} type={ROOM_USER_TYPE.request} />)}
           </ScrollView>
         </TabView.Item>
       </TabView>

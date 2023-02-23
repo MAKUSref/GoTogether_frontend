@@ -1,35 +1,43 @@
-import { StyleSheet, Text, View } from "react-native";
-import { Card, Icon, Button } from '@rneui/themed';
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Card, Icon, Button} from '@rneui/themed';
+import { ROOM_USER_TYPE } from "./types";
+import { useNavigation } from "@react-navigation/native";
+import { Routes } from "../../routing/types";
 
 interface RoomButtonProps {
   name: string,
   host: string,
-  roomId: string,
+  roomPin: number,
   type: string
 }
 
-const RoomCard = ({name, host, type}: RoomButtonProps) => {
+const RoomCard = ({name, host, type, roomPin}: RoomButtonProps) => {
+  const navigation = useNavigation<any>();
+
+  const handleJoinRoom = () => {
+    navigation.navigate(Routes.Map, { roomPin });
+  }
+
   return (
     <View style={styles.mainContainer}>
-      <Card containerStyle={type == 'request' ? styles.cardBlocked : {}}>
-        <View style={styles.row} >
+      <Card containerStyle={type == ROOM_USER_TYPE.request ? styles.cardBlocked : {}} >
+        <Pressable style={styles.row} onPress={handleJoinRoom}>
           <View style={styles.row}>
             {
-            type == 'host' ?  <Icon type="material-community" name="crown" iconStyle={styles.crownIcon}/> : <></>
+              type === ROOM_USER_TYPE.host &&  <Icon type="material-community" name="crown" iconStyle={styles.crownIcon}/>
             }
             {
-            type == 'user' ?  <Icon type="ant-design" name="user" iconStyle={styles.userIcon}/> : <></>
+              type === ROOM_USER_TYPE.user &&  <Icon type="ant-design" name="user" iconStyle={styles.userIcon}/>
             }
             {
-            type == 'request' ?  <Icon type="material-community" name="block-helper" iconStyle={styles.userIcon}/> : <></>
+              type === ROOM_USER_TYPE.request &&  <Icon type="material-community" name="block-helper" iconStyle={styles.userIcon}/>
             }
            <Text>{name}</Text>            
           </View>
           <View>
             {type == 'request' ? <Button title='Cancel' /> : <Button title='Leave' />}
-            
           </View>
-        </View>
+        </Pressable>
       </Card>
 
     </View>
