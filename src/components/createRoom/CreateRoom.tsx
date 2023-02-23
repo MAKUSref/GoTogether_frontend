@@ -11,6 +11,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 const CreateRoom = ({ navigation }: NavigationProps<Routes.CreateRoom>) => {
 
     const [roomName, setRoomName] = useState<string>();
+    const [errorMessage, setErrorMessage] = useState<string>();
     const [createRoom] = useCreateRoomMutation();
   
     const sessionState = useAppSelector((state) => state.session);
@@ -26,9 +27,15 @@ const CreateRoom = ({ navigation }: NavigationProps<Routes.CreateRoom>) => {
         .unwrap()
         .then(()=>{
             console.log(`Room ${roomName} created`);
-        }).catch((e)=>{
+            // navigation.navigate(Routes.ModeSelect);
+            setErrorMessage("Room created succesfully")
+
+          }).catch((e)=>{
             console.error(`Room not created due to error: ${e}`);
+            setErrorMessage("Room not created")
         });
+        }else{
+          setErrorMessage("Rooms name must be at least 6 characters long!")
         }
     }
 
@@ -47,7 +54,8 @@ const CreateRoom = ({ navigation }: NavigationProps<Routes.CreateRoom>) => {
                   />
                   <Button title="Create own room" onPress={handleCreateRoom} />
                 </Card>
-                <Button title="Go back" onPress={handleReturnToModeSelect} />
+                <Button title="Go back" onPress={handleReturnToModeSelect} containerStyle={styles.goBackButton} />
+                <Text style={styles.errorMessage}>{errorMessage}</Text>
                 {/* <Text>UserId: {sessionState.userId}</Text>
                 <Text>UserType: {sessionState.userType}</Text> */}
               </>
@@ -98,6 +106,13 @@ const styles = StyleSheet.create({
       backgroundColor: "#972b54",
       borderTopRightRadius: 20,
       borderBottomRightRadius: 20,
+    },
+    goBackButton: {
+      marginVertical: 20
+    },
+    errorMessage: {
+      textAlign: "center",
+      color: "#aaa"
     }
   });
 

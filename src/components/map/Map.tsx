@@ -9,6 +9,7 @@ import Loader from "../lib/loader/Loader";
 import {
   useFetchRoomByPinQuery,
   useJoinToRoomMutation,
+  useLeaveRoomMutation,
 } from "../../feature/api/apiSlice";
 import { Room } from "../../feature/api/types";
 import { Button } from "react-native-elements";
@@ -16,6 +17,7 @@ import { getColorFromUUID, PRIMARY_COLOR_DARK } from "../../styles/colors";
 import Navbar from "../navbars/Navbar";
 import RoomInfo from "../navbars/mapNavbar/RoomInfo";
 import UserList from "../navbars/mapNavbar/UserList";
+import SpeechButton from "./SpeechButton";
 
 const CHECK_USER_STATUS_TIMEOUT = 2000;
 const LOCATION_TIMEOUT = 1500;
@@ -39,6 +41,7 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
 
   const { data: roomsRes } = useFetchRoomByPinQuery({ roomPin, i: iterator });
   const [joinToRoom] = useJoinToRoomMutation();
+  const [leaveRoom] = useLeaveRoomMutation();
 
   const userColor = useMemo(() => {
     return getColorFromUUID(sessionsState.userId ?? "0");
@@ -76,6 +79,12 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
       joinToRoom({ pin: roomPin, userId: sessionsState.userId });
     }
   };
+
+  const handleLeave = () => {
+    if(roomInfo){
+      leaveRoom({roomId: roomInfo?.id})
+    }
+  }
 
   useEffect(() => {
     (async () => {
@@ -148,6 +157,7 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
               </Text>
             </View>
           </View>
+          <SpeechButton/>
           {roomInfo && (
             <Navbar
               topSection={
@@ -179,7 +189,7 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
                   marginTop: 20,
                 }}
               >
-                <Button title="Leave" buttonStyle={{ marginHorizontal: 10 }} />
+                <Button title="Leave" buttonStyle={{ marginHorizontal: 10 }} onPress={handleLeave} />
                 <Button
                   type="outline"
                   title="Send Request"
