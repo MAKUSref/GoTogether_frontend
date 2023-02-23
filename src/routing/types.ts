@@ -14,7 +14,7 @@ export enum Routes {
 export type RootStackParamList = {
   [Routes.WelcomePage]: undefined,
   [Routes.ModeSelect]: undefined,
-  [Routes.Map]: undefined,
+  [Routes.Map]: { roomPin: string },
   [Routes.Login]: undefined,
   [Routes.Register]: undefined,
   [Routes.RegisterConfirm]: { name: string },

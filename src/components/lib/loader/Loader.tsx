@@ -4,9 +4,10 @@ import LoaderStyles from "./styles";
 
 interface LoaderProps {
   logoVisible?: boolean;
+  text?: string;
 }
 
-const Loader = ({ logoVisible = false }: LoaderProps) => {
+const Loader = ({ logoVisible = false, text = "" }: LoaderProps) => {
   const {
     logoContainer,
     logo,
@@ -37,7 +38,6 @@ const Loader = ({ logoVisible = false }: LoaderProps) => {
 
   return (
     <View style={loaderPage}>
-      
       {logoVisible && (
         <View style={logoContainer}>
           <Text style={[logo, logoPrefix]}>Go</Text>
@@ -62,6 +62,12 @@ const Loader = ({ logoVisible = false }: LoaderProps) => {
           ]}
         />
       </View>
+
+      {!!text && (
+        <View>
+          <Text>{text}</Text>
+        </View>
+      )}
     </View>
   );
 };

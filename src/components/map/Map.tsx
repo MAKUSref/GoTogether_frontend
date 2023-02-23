@@ -1,16 +1,47 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { useAppSelector } from "../../feature/hooks";
 import { NavigationProps, Routes } from "../../routing/types";
 import * as Location from "expo-location";
 import { LocationObject } from "expo-location";
-import Loader from '../lib/loader/Loader';
+import Loader from "../lib/loader/Loader";
+import { useFetchRoomByPinQuery } from "../../feature/api/apiSlice";
+import { Room } from "../../feature/api/types";
 
-const Map = ({ navigation }: NavigationProps<Routes.Map>) => {
+const ACCEPTION_REQUESTS_TIMEOUT = 2000;
+
+const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
+  const { roomPin } = route.params;
+
+  const [acceptionIntervalId, setAcceptionIntervalId] = useState<
+    NodeJS.Timer | undefined
+  >();
+  const [iterator, setIterator] = useState<number>(0);
   const [location, setLocation] = useState<LocationObject | null>(null);
 
   const sessionsState = useAppSelector((state) => state.session);
+
+  const { data: roomsRes } = useFetchRoomByPinQuery({ roomPin, i: iterator });
+
+  const roomInfo: Room | undefined = useMemo(() => {
+    if (roomsRes) {
+      const [roomInfo] = roomsRes.room;
+      return roomInfo;
+    }
+  }, [roomsRes]);
+
+  const avaiableToSeeMap: boolean = useMemo(() => {
+    if (roomInfo && sessionsState.userId) {
+      const inRequestedList = roomInfo.requestingUsers.includes(
+        sessionsState.userId
+      );
+
+      return !inRequestedList;
+    }
+
+    return false;
+  }, [roomInfo]);
 
   useEffect(() => {
     (async () => {
@@ -25,9 +56,26 @@ const Map = ({ navigation }: NavigationProps<Routes.Map>) => {
     })();
   }, []);
 
+  // intervals
+  useEffect(() => {
+    if (avaiableToSeeMap) {
+      clearInterval(acceptionIntervalId);
+    }
+  }, [avaiableToSeeMap]);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      console.log(iterator);
+
+      setIterator((prev) => prev + 1);
+    }, ACCEPTION_REQUESTS_TIMEOUT);
+
+    setAcceptionIntervalId(id);
+  }, []);
+
   return (
     <View style={styles.container}>
-      {location ? (
+      {location && avaiableToSeeMap ? (
         <MapView
           style={styles.map}
           initialRegion={{
@@ -45,7 +93,13 @@ const Map = ({ navigation }: NavigationProps<Routes.Map>) => {
           />
         </MapView>
       ) : (
-        <Loader />
+        <Loader
+          text={
+            avaiableToSeeMap
+              ? "Loading map..."
+              : "Waiting for accept your request..."
+          }
+        />
       )}
     </View>
   );

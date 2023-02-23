@@ -26,7 +26,7 @@ const JoinToRoom = ({ navigation }: NavigationProps<Routes.JoinToRoom>) => {
         .unwrap()
         .then(()=>{
           console.log(`Joined to room ${roomPin}`);
-          navigation.navigate(Routes.Map);
+          navigation.navigate(Routes.Map, { roomPin });
         }).catch((e)=>{
           console.error(`Cannot join due to error: ${e}`);
         });
