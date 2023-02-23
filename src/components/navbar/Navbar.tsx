@@ -17,6 +17,7 @@ import {
   PRIMARY_COLOR_LIGHT_2,
 } from "../../styles/colors";
 import RoomCard from "./RoomCard";
+import Rooms from "./Rooms";
 import UserInfo from "./UserInfo";
 const screenHeight = Dimensions.get("screen").height;
 const screenWidth = Dimensions.get("screen").width;
@@ -92,12 +93,14 @@ const Navbar = () => {
           <UserInfo userId={sessionState.userId || "Guest"} username={sessionState.username || ""}/>
           <View style={styles.divider} />
         </View>
-        <ScrollView style={{width: "100%"}}>
+        {/* <ScrollView style={{width: "100%"}}>
           {rooms.host.map((r, i)=> <RoomCard key={i} roomId={r.id} host={r.hosts[0]} name={r.name} type="host"/>)}
           {rooms.user.map((r, i)=> <RoomCard key={i} roomId={r.id} host={r.hosts[0]} name={r.name} type="user"/>)}
           {rooms.request.map((r, i)=> <RoomCard key={i} roomId={r.id} host={r.hosts[0]} name={r.name} type="request"/>)}
 
-        </ScrollView>
+        </ScrollView> */}
+
+        <Rooms/>
       </View>
     </View>
   );
@@ -105,9 +108,6 @@ const Navbar = () => {
 
 const styles = StyleSheet.create({
   mainContainer: {
-
-
-
     height: "100%",
     width: "100%",
     position: "absolute",
@@ -130,13 +130,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    display: "flex",
-    flexDirection: "column",
-    // justifyContent: "center"
-    alignItems: "center",
-
-    // borderWidth: 1,
-    // borderColor: "#aaa"
   },
   dragHandleContainer: {
     width: "100%",

@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   cardBlocked: {
-    backgroundColor: "#ccc"
+    backgroundColor: "#fff"
   },
   row: {
     flexDirection: "row",
