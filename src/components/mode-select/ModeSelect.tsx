@@ -1,33 +1,19 @@
-import React, { PropsWithChildren, RefObject, useEffect, useRef, useState } from "react";
-import { View, StyleSheet, TextInput } from "react-native";
-import { Button, Header, Text} from "react-native-elements";
-import {Card, Input, InputProps} from "@rneui/themed";
-import { useGetStatusQuery, useCreateRoomMutation, useJoinToRoomMutation } from "../../feature/api/apiSlice";
+import React, { useState } from "react";
+import { View, StyleSheet } from "react-native";
+import { Button, Text} from "react-native-elements";
+import {Card} from "@rneui/themed";
+import { useCreateRoomMutation, useJoinToRoomMutation } from "../../feature/api/apiSlice";
 import { useAppDispatch, useAppSelector } from "../../feature/hooks";
 import { logout } from "../../feature/session/sessionSlice";
 import { NavigationProps, Routes } from "../../routing/types";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Navbar from "../navbar/Navbar";
 
 
 const ModeSelect = ({ navigation }: NavigationProps<Routes.ModeSelect>) => {
-
-  const [roomPin, setRoomPin] = useState<string>();
-  const [roomName, setRoomName] = useState<string>();
-  const [createRoom] = useCreateRoomMutation();
-  const [joinToRoom] = useJoinToRoomMutation();
-
   const sessionState = useAppSelector((state) => state.session);
-
-  const dispatch = useAppDispatch();
-  // const { data: statusData } = useGetStatusQuery();
 
   const handleOpenLoginPage = () => {
     navigation.navigate(Routes.Login);
-  };
-
-  const handleLogut = () => {
-    dispatch(logout());
   };
 
   const handleCreateRoom = () => {
@@ -43,29 +29,11 @@ const ModeSelect = ({ navigation }: NavigationProps<Routes.ModeSelect>) => {
         {sessionState.userId ? (
           <>
             <Card>
-              {/* <Card.Title>Join room</Card.Title>
-              <Card.Divider />
-              <Input
-              leftIcon={<Icon name="link" size={20} />}
-              placeholder="Enter Code"
-              onChangeText={setRoomPin}
-              keyboardType="decimal-pad"
-              /> */}
               <Button title="Join to room" onPress={handleJoinToRoom}/>
             </Card>
             <Card>
-              {/* <Card.Title>Create new room</Card.Title>
-              <Card.Divider />
-              <Input
-              leftIcon={<Icon name="map" size={20} />}
-              onChangeText={setRoomName}
-              placeholder="Room's name"
-              /> */}
               <Button title="Create own room" onPress={handleCreateRoom} />
             </Card>
-            {/* <Button title="Logout" onPress={handleLogut} containerStyle={styles.button}/> */}
-            {/* <Text>UserId: {sessionState.userId}</Text>
-            <Text>UserType: {sessionState.userType}</Text> */}
           </>
         ) : (
           <>
@@ -75,7 +43,7 @@ const ModeSelect = ({ navigation }: NavigationProps<Routes.ModeSelect>) => {
           </>
         )}
       </View>
-      {sessionState.userId ? <Navbar/> : <></>}
+      {sessionState.userId && <Navbar/>}
     </View>
   );
 };

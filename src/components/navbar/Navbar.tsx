@@ -19,20 +19,17 @@ import {
 import RoomCard from "./RoomCard";
 import Rooms from "./Rooms";
 import UserInfo from "./UserInfo";
+
 const screenHeight = Dimensions.get("screen").height;
 const screenWidth = Dimensions.get("screen").width;
 
+const minNavbarPosition = 60;
+const navbarMaxHeight = screenHeight * 0.5;
+const maxMaskOpacity = .4;
+
 const Navbar = () => {
-
-  const { data: rooms = { host: [], user: [], request: [] } } = useFetchMyRoomsQuery();
-  const minNavbarPosition = 60;
-  const navbarMaxHeight = screenHeight * 0.5;
-  const maxMaskOpacity = .4;
-
-
   const [navbarPosition, setNavbarPosition] = useState<number>(screenHeight - minNavbarPosition);
   const [maskOpacity, setMaskOpacity] = useState<number>(0);
-  let hideMask: boolean = true;
 
   const sessionState = useAppSelector((state) => state.session);
 
@@ -72,8 +69,6 @@ const Navbar = () => {
     setNavbarPosition(screenHeight - navbarMaxHeight);
     setMaskOpacity(1);
   }
-
-
 
   return (
     <View style={styles.mainContainer} >
