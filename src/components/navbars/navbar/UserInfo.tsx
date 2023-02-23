@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet, Image } from "react-native";
 // import { Image } from "react-native-elements";
 import { Icon } from '@rneui/themed';
-import { logout } from "../../feature/session/sessionSlice";
-import { useAppDispatch, useAppSelector } from "../../feature/hooks";
-import { NavigationProps, Routes } from "../../routing/types";
+import { logout } from "../../../feature/session/sessionSlice";
+import { useAppDispatch, useAppSelector } from "../../../feature/hooks";
+import { NavigationProps, Routes } from "../../../routing/types";
 import { useNavigation } from "@react-navigation/native";
 
 interface UserInfoProps {
@@ -24,7 +24,7 @@ const UserInfo = ({username, userId}: UserInfoProps) => {
   <View style={styles.mainContainer}>
     {/* <Image source={{uri: "https://source.unsplash.com/random?sig=2"}} style={{width: 50, height: 50}}/> */}
 
-    <Image source={{uri: "https://thispersondoesnotexist.com/image"}} style={styles.userAvatar}/>
+    {/* <Image source={{uri: "https://thispersondoesnotexist.com/image"}} style={styles.userAvatar}/> */}
     <View>
       <View style={styles.nameRow} >
         <Text style={[styles.name, {fontWeight: "600"}]}>{username}</Text>
@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
   },
   nameRow: {
     marginHorizontal: 20,
+    // width: "100%",
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",

@@ -9,6 +9,9 @@ import Loader from "../lib/loader/Loader";
 import { useFetchRoomByPinQuery, useJoinToRoomMutation } from "../../feature/api/apiSlice";
 import { Room } from "../../feature/api/types";
 import { Button } from "react-native-elements";
+import Navbar from "../navbars/Navbar";
+import RoomInfo from "../navbars/mapNavbar/RoomInfo";
+import UserList from "../navbars/mapNavbar/UserList";
 
 const CHECK_USER_STATUS_TIMEOUT = 2000;
 
@@ -32,10 +35,10 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
   const roomInfo: Room | undefined = useMemo(() => {
     if (roomsRes) {
       const [roomInfo] = roomsRes.room;
+      
       return roomInfo;
     }
   }, [roomsRes]);
-
   const avaiableToSeeMap: boolean = useMemo(() => {
     if (roomInfo && sessionsState.userId) {
       const userInHosts = roomInfo.hosts.includes(sessionsState.userId);
@@ -78,7 +81,6 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
   // intervals
   useEffect(() => {
     const id = setInterval(() => {
-      console.log(iterator);
 
       setIterator((prev) => prev + 1);
     }, CHECK_USER_STATUS_TIMEOUT);
@@ -93,6 +95,7 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
   return (
     <View style={styles.container}>
       {location && avaiableToSeeMap ? (
+        <>
         <MapView
           style={styles.map}
           initialRegion={{
@@ -109,6 +112,11 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
             }}
           />
         </MapView>
+        {
+         roomInfo && <Navbar topSection={<RoomInfo roomId={roomInfo.id } roomName={roomInfo.name} pin={roomInfo.pin}/>} bottomSection={<UserList hosts={roomInfo?.hosts} users={roomInfo.users} requestedUsers={roomInfo.requestingUsers} roomId={roomInfo.id}/>} />
+
+        }
+        </>
       ) : (
         <Loader
           text={loaderMsg}
