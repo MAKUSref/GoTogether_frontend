@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ReactComponentElement, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -16,9 +16,6 @@ import {
   PRIMARY_COLOR_LIGHT,
   PRIMARY_COLOR_LIGHT_2,
 } from "../../styles/colors";
-import RoomCard from "./RoomCard";
-import Rooms from "./Rooms";
-import UserInfo from "./UserInfo";
 
 const screenHeight = Dimensions.get("screen").height;
 const screenWidth = Dimensions.get("screen").width;
@@ -27,7 +24,12 @@ const minNavbarPosition = 60;
 const navbarMaxHeight = screenHeight * 0.5;
 const maxMaskOpacity = .4;
 
-const Navbar = () => {
+interface NavbarProps {
+  topSection?: JSX.Element, 
+  bottomSection?: JSX.Element, 
+}
+
+const Navbar = ({topSection=<></>, bottomSection=<></>}: NavbarProps) => {
   const [navbarPosition, setNavbarPosition] = useState<number>(screenHeight - minNavbarPosition);
   const [maskOpacity, setMaskOpacity] = useState<number>(0);
 
@@ -85,17 +87,11 @@ const Navbar = () => {
           <View style={styles.dragHandle}/>
         </View>
         <View style={[styles.navbarContent,{opacity: maskOpacity}]}>
-          <UserInfo userId={sessionState.userId || "Guest"} username={sessionState.username || ""}/>
-          <View style={styles.divider} />
+          {/* <UserInfo userId={sessionState.userId || "Guest"} username={sessionState.username || ""}/> */}
+          {topSection}
         </View>
-        {/* <ScrollView style={{width: "100%"}}>
-          {rooms.host.map((r, i)=> <RoomCard key={i} roomId={r.id} host={r.hosts[0]} name={r.name} type="host"/>)}
-          {rooms.user.map((r, i)=> <RoomCard key={i} roomId={r.id} host={r.hosts[0]} name={r.name} type="user"/>)}
-          {rooms.request.map((r, i)=> <RoomCard key={i} roomId={r.id} host={r.hosts[0]} name={r.name} type="request"/>)}
-
-        </ScrollView> */}
-
-        <Rooms/>
+        {/* <Rooms/> */}
+        {bottomSection}
       </View>
     </View>
   );
@@ -148,11 +144,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     paddingHorizontal: 20
-  },
-  divider: {
-    height: 1,
-    backgroundColor: PRIMARY_COLOR_DARK,
-    width: "100%"
   },
   shadowProp: {
     shadowColor: "#000",
