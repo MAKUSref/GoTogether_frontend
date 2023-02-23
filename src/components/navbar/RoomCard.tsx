@@ -24,13 +24,13 @@ const RoomCard = ({name, host, type, roomPin}: RoomButtonProps) => {
         <Pressable style={styles.row} onPress={handleJoinRoom}>
           <View style={styles.row}>
             {
-              type === ROOM_USER_TYPE.host &&  <Icon type="material-community" name="crown" iconStyle={styles.crownIcon}/>
+              type === ROOM_USER_TYPE.host && <Icon type="material-community" name="crown" iconStyle={styles.crownIcon}/>
             }
             {
-              type === ROOM_USER_TYPE.user &&  <Icon type="ant-design" name="user" iconStyle={styles.userIcon}/>
+              type === ROOM_USER_TYPE.user && <Icon type="ant-design" name="user" iconStyle={styles.userIcon}/>
             }
             {
-              type === ROOM_USER_TYPE.request &&  <Icon type="material-community" name="block-helper" iconStyle={styles.userIcon}/>
+              type === ROOM_USER_TYPE.request && <Icon type="material-community" name="block-helper" iconStyle={styles.userIcon}/>
             }
            <Text>{name}</Text>            
           </View>
