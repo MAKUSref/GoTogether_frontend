@@ -4,12 +4,20 @@ export enum USER_TYPE {
   Guest = 'Guest'
 }
 
+export interface Coords {
+  long: number;
+  lat: number;
+  radius: number;
+  timestamp: number;
+}
+
 export interface IUser {
   id: string;
   name: string;
   login: string;
   password: string;
   type: USER_TYPE;
+  coords: Coords | undefined;
 } 
 
 export interface Room {
