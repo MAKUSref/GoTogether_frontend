@@ -25,6 +25,7 @@ const apiSlice = createApi({
       return headers;
     },
   }),
+  tagTypes: ["room", "user"],
   endpoints: (builder) => ({
     // check
     getStatus: builder.query<{ status: string }, number>({
@@ -37,7 +38,7 @@ const apiSlice = createApi({
         url: `${USER_API_PATH}/login`,
         method: "POST",
         body: { login, password },
-      }),
+      })
     }),
     register: builder.mutation<{ message: string }, { name: string, login: string, password: string }>({
       query: ({ login, name, password }) => ({
@@ -50,30 +51,36 @@ const apiSlice = createApi({
 
     // room
     fetchRoom: builder.query<RoomsFetchResponse, { roomId: string, i?: number }>({
-      query: ({ roomId, i }) => `${USER_API_ROOMS}/${roomId}`
+      query: ({ roomId, i }) => `${USER_API_ROOMS}/${roomId}`,
+      providesTags: ["room"]
     }),
     fetchRoomByPin: builder.query<RoomsFetchResponse, { roomPin: string, i?: number }>({
-      query: ({ roomPin, i }) => `${USER_API_ROOMS}/filter/pin/${roomPin}`
+      query: ({ roomPin, i }) => `${USER_API_ROOMS}/filter/pin/${roomPin}`,
+      providesTags: ["room"]
     }),
     fetchRooms: builder.query<RoomsFetchResponse, void>({
       query: () => USER_API_ROOMS,
+      providesTags: ["room"]
     }),
     fetchMyRooms: builder.query<MyRoomsFetchResponse, void>({
       query: () => `${USER_API_ROOMS}/my-rooms`,
+      providesTags: ["room"]
     }),
     createRoom: builder.mutation<{ message: string }, { name: string }>({
       query: ({ name }) => ({
         url: USER_API_ROOMS,
         method: 'POST',
         body: { name }
-      })
+      }),
+      invalidatesTags: ["room"]
     }),
     joinToRoom: builder.mutation<{ message: string }, { pin: string, userId: string }>({
       query: ({ pin, userId }) => ({
         url: `${USER_API_ROOMS}/join-user`,
         method: 'PATCH',
         body: { pin, userId }
-      })
+      }),
+      invalidatesTags: ["room"]
     }),
   }),
   

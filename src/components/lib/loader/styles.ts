@@ -39,6 +39,10 @@ const styles = StyleSheet.create({
     borderTopColor: PRIMARY_COLOR,
     borderWidth: LOADER_BORDER_WIDTH,
   },
+  loaderMsg: {
+    textAlign: "center",
+    marginTop: 10
+  }
 });
 
 export default styles;

@@ -5,9 +5,10 @@ import LoaderStyles from "./styles";
 interface LoaderProps {
   logoVisible?: boolean;
   text?: string;
+  element?: JSX.Element;
 }
 
-const Loader = ({ logoVisible = false, text = "" }: LoaderProps) => {
+const Loader = ({ logoVisible = false, text = "", element = <></> }: LoaderProps) => {
   const {
     logoContainer,
     logo,
@@ -15,6 +16,7 @@ const Loader = ({ logoVisible = false, text = "" }: LoaderProps) => {
     loaderPage,
     loaderContainer,
     loaderProgress,
+    loaderMsg
   } = LoaderStyles;
 
   const loaderRotationDegree = useRef(new Animated.Value(0)).current;
@@ -65,9 +67,11 @@ const Loader = ({ logoVisible = false, text = "" }: LoaderProps) => {
 
       {!!text && (
         <View>
-          <Text>{text}</Text>
+          <Text style={loaderMsg}>{text}</Text>
         </View>
       )}
+
+      {element}
     </View>
   );
 };
