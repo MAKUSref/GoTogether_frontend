@@ -27,6 +27,7 @@ const Login = ({ navigation }: NavigationProps<Routes.Login>) => {
       .then((data) => {
         dispatch(setUser({ userId: data.user.id, username: data.user.name, userType: data.user.type }));
         navigation.navigate(Routes.ModeSelect);
+        setLoginText("");
       })
       .catch((err) => {
         setErrorMsg(err.data.message);
