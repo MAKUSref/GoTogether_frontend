@@ -1,21 +1,37 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Card, Icon, Button} from '@rneui/themed';
-import { ROOM_USER_TYPE } from "./types";
+import { ROOM_USER_TYPE } from "../types";
 import { useNavigation } from "@react-navigation/native";
-import { Routes } from "../../routing/types";
+import { Routes } from "../../../routing/types";
+import { useDeleteRequestedMutation } from "../../../feature/api/apiSlice";
+import { useAppSelector } from "../../../feature/hooks";
 
 interface RoomButtonProps {
   name: string,
   host: string,
   roomPin: number,
-  type: string
+  type: string,
+  roomId: string,
 }
 
-const RoomCard = ({name, host, type, roomPin}: RoomButtonProps) => {
+const RoomCard = ({name, host, type, roomPin, roomId}: RoomButtonProps) => {
   const navigation = useNavigation<any>();
 
   const handleJoinRoom = () => {
     navigation.navigate(Routes.Map, { roomPin });
+  }
+  const sessionState = useAppSelector((state) => state.session);
+
+  const [cancel] = useDeleteRequestedMutation();
+
+  const handleCancel = () => {
+    if(sessionState.userId){
+
+      console.log({roomId, userId: sessionState.userId})
+
+      cancel({roomId, userId: sessionState.userId}).catch(console.log)
+    }
+
   }
 
   return (
@@ -35,7 +51,15 @@ const RoomCard = ({name, host, type, roomPin}: RoomButtonProps) => {
            <Text>{name}</Text>            
           </View>
           <View>
-            {type == 'request' ? <Button title='Cancel' /> : <Button title='Leave' />}
+            {
+              type === ROOM_USER_TYPE.host && <Button title='Leave' />
+            }
+            {
+              type === ROOM_USER_TYPE.user && <Button title='Leave' />
+            }
+            {
+              type === ROOM_USER_TYPE.request && <Button title='Cancel' onPress={handleCancel}/>
+            }
           </View>
         </Pressable>
       </Card>

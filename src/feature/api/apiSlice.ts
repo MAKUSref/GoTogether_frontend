@@ -5,7 +5,7 @@ import { IUser, MyRoomsFetchResponse, RoomsFetchResponse } from "./types";
 
 // dotenv.config();
 
-const API_URL = `http://192.168.154.82:4040/api`;
+const API_URL = `http://10.77.9.111:4040/api`;
 
 const USER_API_PATH = '/user';
 const USER_API_ROOMS = '/room';
@@ -38,7 +38,8 @@ const apiSlice = createApi({
         url: `${USER_API_PATH}/login`,
         method: "POST",
         body: { login, password },
-      })
+      }),
+      invalidatesTags: ['room']
     }),
     register: builder.mutation<{ message: string }, { name: string, login: string, password: string }>({
       query: ({ login, name, password }) => ({
@@ -82,6 +83,49 @@ const apiSlice = createApi({
       }),
       invalidatesTags: ["room"]
     }),
+    acceptUser: builder.mutation<{ message: string }, { roomId: string, userId: string }>({
+      query: ({ roomId, userId }) => ({
+        url: `${USER_API_ROOMS}/accept-user`,
+        method: 'PATCH',
+        body: { roomId, userId }
+      }),
+      invalidatesTags: ["room"]
+    }),
+    grantHost: builder.mutation<{ message: string }, { roomId: string, userId: string }>({
+      query: ({ roomId, userId }) => ({
+        url: `${USER_API_ROOMS}/grant-host`,
+        method: 'PATCH',
+        body: { roomId, userId }
+      }),
+      invalidatesTags: ["room"]
+    }),
+
+    deleteRequested: builder.mutation<{ message: string }, { roomId: string, userId: string }>({
+      query: ({ roomId, userId }) => ({
+        url: `${USER_API_ROOMS}/delete/requested`,
+        method: 'DELETE',
+        body: { roomId, userId }
+      }),
+      invalidatesTags: ["room"]
+    }),
+    deleteUser: builder.mutation<{ message: string }, { roomId: string, userId: string }>({
+      query: ({ roomId, userId }) => ({
+        url: `${USER_API_ROOMS}/delete/users`,
+        method: 'DELETE',
+        body: { roomId, userId }
+      }),
+      invalidatesTags: ["room"]
+    }),
+    deleteHost: builder.mutation<{ message: string }, { roomId: string, userId: string }>({
+      query: ({ roomId, userId }) => ({
+        url: `${USER_API_ROOMS}/delete/hosts`,
+        method: 'DELETE',
+        body: { roomId, userId }
+      }),
+      invalidatesTags: ["room"]
+    }),
+
+
   }),
   
 });
@@ -101,5 +145,10 @@ export const {
   useFetchMyRoomsQuery,
   useCreateRoomMutation,
   useJoinToRoomMutation,
+  useDeleteRequestedMutation,
+  useDeleteUserMutation,
+  useDeleteHostMutation,
+  useAcceptUserMutation,
+  useGrantHostMutation,
 } = apiSlice;
 export default apiSlice;

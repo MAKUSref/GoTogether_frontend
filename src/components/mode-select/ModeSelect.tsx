@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
-import { Button, Text} from "react-native-elements";
-import {Card} from "@rneui/themed";
-import { useCreateRoomMutation, useJoinToRoomMutation } from "../../feature/api/apiSlice";
+import { Button, Text } from "react-native-elements";
+import { Card } from "@rneui/themed";
+import {
+  useCreateRoomMutation,
+  useJoinToRoomMutation,
+} from "../../feature/api/apiSlice";
 import { useAppDispatch, useAppSelector } from "../../feature/hooks";
 import { logout } from "../../feature/session/sessionSlice";
 import { NavigationProps, Routes } from "../../routing/types";
-import Navbar from "../navbar/Navbar";
-
+import Navbar from "../navbars/Navbar";
+import Rooms from "../navbars/navbar/Rooms";
+import UserInfo from "../navbars/navbar/UserInfo";
 
 const ModeSelect = ({ navigation }: NavigationProps<Routes.ModeSelect>) => {
   const sessionState = useAppSelector((state) => state.session);
@@ -18,10 +22,10 @@ const ModeSelect = ({ navigation }: NavigationProps<Routes.ModeSelect>) => {
 
   const handleCreateRoom = () => {
     navigation.navigate(Routes.CreateRoom);
-  }
+  };
   const handleJoinToRoom = () => {
     navigation.navigate(Routes.JoinToRoom);
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -29,7 +33,7 @@ const ModeSelect = ({ navigation }: NavigationProps<Routes.ModeSelect>) => {
         {sessionState.userId ? (
           <>
             <Card>
-              <Button title="Join to room" onPress={handleJoinToRoom}/>
+              <Button title="Join to room" onPress={handleJoinToRoom} />
             </Card>
             <Card>
               <Button title="Create own room" onPress={handleCreateRoom} />
@@ -37,13 +41,27 @@ const ModeSelect = ({ navigation }: NavigationProps<Routes.ModeSelect>) => {
           </>
         ) : (
           <>
-            <Text style={[styles.textCenter, {marginBottom: 60}]}>Here will be image</Text>
-            <Text h4 style={[styles.textCenter, {marginBottom: 20}]}>You have to login first</Text>
+            <Text style={[styles.textCenter, { marginBottom: 60 }]}>
+              Here will be image
+            </Text>
+            <Text h4 style={[styles.textCenter, { marginBottom: 20 }]}>
+              You have to login first
+            </Text>
             <Button title="Go to Login" onPress={handleOpenLoginPage} />
           </>
         )}
       </View>
-      {sessionState.userId && <Navbar/>}
+      {sessionState.userId && (
+        <Navbar
+          bottomSection={<Rooms />}
+          topSection={
+            <UserInfo
+              userId={sessionState.userId}
+              username={sessionState.username || ""}
+            />
+          }
+        />
+      )}
     </View>
   );
 };
@@ -59,7 +77,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   textCenter: {
-    textAlign: 'center'
+    textAlign: "center",
   },
   button: {
     marginTop: 20,
@@ -67,12 +85,11 @@ const styles = StyleSheet.create({
   panel: {
     marginHorizontal: 20,
     display: "flex",
-    flexDirection: "row"
+    flexDirection: "row",
   },
   panelSide: {
     flex: 1,
     height: 200,
-    
   },
   panelSide1: {
     backgroundColor: "#54972b",
@@ -83,7 +100,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#972b54",
     borderTopRightRadius: 20,
     borderBottomRightRadius: 20,
-  }
+  },
 });
 
 export default ModeSelect;
