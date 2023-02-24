@@ -14,12 +14,13 @@ import {
   useUpdateCoordsMutation,
 } from "../../feature/api/apiSlice";
 import { Room } from "../../feature/api/types";
-import { Button } from "react-native-elements";
+import { Button, SpeedDial } from "react-native-elements";
 import { getColorFromUUID } from "../../styles/colors";
 import Navbar from "../navbars/Navbar";
 import RoomInfo from "../navbars/mapNavbar/RoomInfo";
 import UserList from "../navbars/mapNavbar/UserList";
 import SpeechButton from "./SpeechButton";
+import UserInfo from "../navbars/navbar/UserInfo";
 
 const CHECK_USER_STATUS_TIMEOUT = 2000;
 const LOCATION_TIMEOUT = 1000;
@@ -108,12 +109,11 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
       setLocation(location);
     })();
 
-    console.log(usersInfo);
   }, []);
 
-  useEffect(() => {
-    console.log(usersInfo);
-  }, [usersInfo])
+  // useEffect(() => {
+  //   console.log(usersInfo);
+  // }, [usersInfo])
 
   // intervals
   // Check user status
@@ -168,12 +168,14 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
                 longitude: location.coords.longitude,
               }}
             >
-              <View style={[styles.markerBg]}>
+              {/* <View style={[styles.markerBg]}>
                 <View style={[styles.marker, {
                   backgroundColor: userColor
                 }]}>
                 </View>
-              </View>
+              </View> */}
+              <Text>asd</Text>
+              
             </Marker>
 
             {filteredUsers.map((user, i) => {
@@ -189,12 +191,13 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
                     longitude: user.coords.long,
                   }}
                 >
-                  <View style={[styles.markerBg]}>
+                  {/* <View style={[styles.markerBg]}>
                     <View style={[styles.marker, {
                       backgroundColor: userColor
                     }]}>
                     </View>
-                  </View>
+                  </View> */}
+                  <Text>{user.login}</Text>
                 </Marker>
               );
             })}
@@ -219,7 +222,8 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
               );
             })}
           </View>
-          <SpeechButton/>
+          <SpeechButton others={filteredUsers} you={{lat: location.coords.latitude, long: location.coords.longitude}}/>
+
           {roomInfo && (
             <Navbar
               topSection={
