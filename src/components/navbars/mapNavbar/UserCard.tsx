@@ -9,6 +9,7 @@ import {
   useDeleteRequestedMutation,
   useDeleteUserMutation,
   useGrantHostMutation,
+  useLeaveRoomMutation,
 } from "../../../feature/api/apiSlice";
 import { useAppSelector } from "../../../feature/hooks";
 
@@ -27,6 +28,7 @@ const UserCard = ({ userId, type, isButtonVisable, roomId }: UserCardProps) => {
   const [acceptRequest] = useAcceptUserMutation();
   const [grantHost] = useGrantHostMutation();
 
+  const [leaveRoom] = useLeaveRoomMutation();
   const [deleteHost] = useDeleteHostMutation();
   const [deleteUser] = useDeleteUserMutation();
   const [deleteRequested] = useDeleteRequestedMutation();
@@ -49,12 +51,16 @@ const UserCard = ({ userId, type, isButtonVisable, roomId }: UserCardProps) => {
     deleteRequested({ roomId, userId }).catch(console.error);
   };
 
+  const handleLeave = () =>{
+    leaveRoom({roomId});
+    navigation.navigate(Routes.ModeSelect);
+    
+  }
+
   const getButton = () => {
-    let buttonText = "Kick";
-    let callback = () => {};
 
     if (userId == sessionState.userId) {
-      return <Button title={"Leave"} onPress={callback} />;
+      return <Button title={"Leave"} onPress={handleLeave} />;
     }
 
     if (isButtonVisable) {
