@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   col: {
     marginStart: 20,
     marginEnd: 20,
-    marginTop: 40
+    marginTop: 100,
   },
   info: {
     textAlign: 'center',

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { Button, Input, Text } from "react-native-elements";
+import { Button, Image, Input, Text } from "react-native-elements";
 import { useLoginMutation } from "../../feature/api/apiSlice";
 import { useAppDispatch } from "../../feature/hooks";
 import { setUser } from "../../feature/session/sessionSlice";
@@ -21,11 +21,16 @@ const Login = ({ navigation }: NavigationProps<Routes.Login>) => {
   };
 
   const handleLogin = () => {
-
     login({ login: loginText, password })
       .unwrap()
       .then((data) => {
-        dispatch(setUser({ userId: data.user.id, username: data.user.name, userType: data.user.type }));
+        dispatch(
+          setUser({
+            userId: data.user.id,
+            username: data.user.name,
+            userType: data.user.type,
+          })
+        );
         navigation.navigate(Routes.ModeSelect);
         setLoginText("");
       })
@@ -63,8 +68,15 @@ const Login = ({ navigation }: NavigationProps<Routes.Login>) => {
           </Text>
         </Text>
         <Button title="Login" onPress={handleLogin} />
+        <View style={{ width: "100%", height: "40%", marginVertical: 50 }}>
+          <Image
+            style={{ width: "100%", height: "100%" }}
+            source={{
+              uri: "https://i.ibb.co/SRYHSSt/undraw-Fingerprint-login-re-t71l.png",
+            }}
+          />
+        </View>
       </View>
-      {/* <Navbar/> */}
     </View>
   );
 };
@@ -72,24 +84,24 @@ const Login = ({ navigation }: NavigationProps<Routes.Login>) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   col: {
     // marginLeft: 10,
     marginStart: 20,
     marginEnd: 20,
-    marginTop: 40
+    marginTop: 100,
   },
   info: {
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 25,
     marginTop: 15,
   },
   errorMsg: {
-    textAlign: 'center',
-    color: 'red',
-    fontWeight: 'bold',
-  }
+    textAlign: "center",
+    color: "red",
+    fontWeight: "bold",
+  },
 });
 
 export default Login;

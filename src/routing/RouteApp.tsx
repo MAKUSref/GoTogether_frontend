@@ -61,12 +61,10 @@ const RouteApp = () => (
     <Stack.Screen 
       name={Routes.JoinToRoom}
       component={JoinToRoom}
-      options={{ headerShown: false }}
     />
     <Stack.Screen 
       name={Routes.CreateRoom}
       component={CreateRoom}
-      // options={{ headerShown: false }}
     />
   </Stack.Navigator>
 );
