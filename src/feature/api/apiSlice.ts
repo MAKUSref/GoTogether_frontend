@@ -56,6 +56,10 @@ const apiSlice = createApi({
       }),
       invalidatesTags: ['coords']
     }),
+    fetchUser: builder.query<{user: IUser[]}, { userId: string, i?: number }>({
+      query: ({ userId, i }) => `${USER_API_PATH}/${userId}`,
+      providesTags: ["user"]
+    }),
 
     // room
     fetchRoom: builder.query<RoomsFetchResponse, { roomId: string, i?: number }>({
@@ -153,6 +157,7 @@ export const {
   useGetStatusQuery,
 
   // user
+  useFetchUserQuery,
   useLoginMutation,
   useRegisterMutation,
   useUpdateCoordsMutation,

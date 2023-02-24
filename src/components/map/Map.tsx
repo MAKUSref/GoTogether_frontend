@@ -168,13 +168,12 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
                 longitude: location.coords.longitude,
               }}
             >
-              {/* <View style={[styles.markerBg]}>
+              <View style={[styles.markerBg]}>
                 <View style={[styles.marker, {
                   backgroundColor: userColor
                 }]}>
                 </View>
-              </View> */}
-              <Text>asd</Text>
+              </View>
               
             </Marker>
 
@@ -191,13 +190,12 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
                     longitude: user.coords.long,
                   }}
                 >
-                  {/* <View style={[styles.markerBg]}>
+                  <View style={[styles.markerBg]}>
                     <View style={[styles.marker, {
                       backgroundColor: userColor
                     }]}>
                     </View>
-                  </View> */}
-                  <Text>{user.login}</Text>
+                  </View>
                 </Marker>
               );
             })}
