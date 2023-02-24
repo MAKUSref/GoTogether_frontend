@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
-import { Button, Text } from "react-native-elements";
+import { View, StyleSheet, ActivityIndicator } from "react-native";
+import { Button, Image, Text } from "react-native-elements";
 import { Card } from "@rneui/themed";
 import {
   useCreateRoomMutation,
@@ -30,10 +30,16 @@ const ModeSelect = ({ navigation }: NavigationProps<Routes.ModeSelect>) => {
   return (
     <View style={styles.container}>
       <View style={styles.col}>
+        <View style={{width: '100%', height: '50%', marginVertical: 50}}>
+          <Image
+            style={{width: '100%', height: '100%'}}
+            source={{uri:'https://i.ibb.co/cJkNtk5/Journey-amico.png'}}
+          />
+        </View>
         {sessionState.userId ? (
           <>
             <Card>
-              <Button title="Join to room" onPress={handleJoinToRoom} />
+              <Button title="Join to new room" onPress={handleJoinToRoom} />
             </Card>
             <Card>
               <Button title="Create own room" onPress={handleCreateRoom} />
@@ -41,9 +47,6 @@ const ModeSelect = ({ navigation }: NavigationProps<Routes.ModeSelect>) => {
           </>
         ) : (
           <>
-            <Text style={[styles.textCenter, { marginBottom: 60 }]}>
-              Here will be image
-            </Text>
             <Text h4 style={[styles.textCenter, { marginBottom: 20 }]}>
               You have to login first
             </Text>

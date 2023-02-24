@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { useAppSelector } from "../../feature/hooks";
 import { NavigationProps, Routes } from "../../routing/types";
@@ -33,6 +33,7 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
   const [locationIntervalId, setLocationIntervalId] = useState<NodeJS.Timer | undefined>();
   const [iterator, setIterator] = useState<number>(0);
   const [location, setLocation] = useState<LocationObject | null>(null);
+  const [focusRegion, setFocusRegion] = useState<{lat: number, long: number} | null>(null);
   const [loaderMsg, setLoaderMsg] = useState<string>(LOADER_MSG_LOADING);
 
   const sessionsState = useAppSelector((state) => state.session);
@@ -41,6 +42,8 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
   const { data: usersInfo } = useFetchUsersInfoFromRoomQuery(roomPin);
   const [joinToRoom] = useJoinToRoomMutation();
   const [sendCoords] = useUpdateCoordsMutation();
+
+  const mapRef = useRef<any>(null);
 
   const filteredUsers = useMemo(() => {
     const users = usersInfo?.user.filter((user) => user.id !== sessionsState.userId);
@@ -86,6 +89,12 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
     }
   };
 
+  const handleOnRegioChange = (lat?: number, long?: number) => {    
+    if (lat && long) {
+      setFocusRegion({lat, long});
+    }
+  }
+
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -97,14 +106,9 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
       let location = await Location.getCurrentPositionAsync({});
 
       setLocation(location);
+      setFocusRegion({lat: location.coords.latitude, long: location.coords.longitude});
     })();
-
-    console.log(usersInfo);
   }, []);
-
-  useEffect(() => {
-    console.log(usersInfo);
-  }, [usersInfo])
 
   // intervals
   // Check user status
@@ -142,16 +146,24 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
 
   return (
     <View style={styles.container}>
-      {location && avaiableToSeeMap ? (
+      {location && focusRegion && avaiableToSeeMap ? (
         <>
           <MapView
+            ref={mapRef}
             style={styles.map}
-            initialRegion={{
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
+            // initialRegion={{
+            //   latitude: focusRegion.lat,
+            //   longitude: focusRegion.long,
+            //   latitudeDelta: 0.011,
+            //   longitudeDelta: 0.011,
+            // }}
+            region={{
+              latitude: focusRegion.lat,
+              longitude: focusRegion.long,
+              latitudeDelta: 0.011,
+              longitudeDelta: 0.011,
             }}
+            // onRegionChange={(region) => handleOnRegioChange(region.latitude, region.longitude)}
           >
             <Marker
               coordinate={{
@@ -163,6 +175,7 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
                 <View style={[styles.marker, {
                   backgroundColor: userColor
                 }]}>
+                  <Text style={[styles.markerText]}>{sessionsState.username?.[0].toUpperCase()}</Text>
                 </View>
               </View>
             </Marker>
@@ -184,6 +197,7 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
                     <View style={[styles.marker, {
                       backgroundColor: userColor
                     }]}>
+                      <Text style={[styles.markerText]}>{user.name[0].toUpperCase()}</Text>
                     </View>
                   </View>
                 </Marker>
@@ -193,20 +207,27 @@ const Map = ({ navigation, route }: NavigationProps<Routes.Map>) => {
           </MapView>
 
           <View style={[styles.usersContainer]}>
-            <View style={[styles.userAvatar, { backgroundColor: userColor }]}>
+            <Pressable 
+              style={[styles.userAvatar, { backgroundColor: userColor }]} 
+              onPress={() => handleOnRegioChange(location.coords.latitude, location.coords.longitude)}
+            >
               <Text style={[styles.avatarText]}>
                 {sessionsState.username?.[0].toUpperCase()}
               </Text>
-            </View>
+            </Pressable>
 
             {filteredUsers.map((user, i) => {
               const userColor = getColorFromUUID(user.id);
               return (
-                <View key={i} style={[styles.userAvatar, { backgroundColor: userColor }, styles.userAvatarSmall]}>
+                <Pressable 
+                  key={i} 
+                  style={[styles.userAvatar, { backgroundColor: userColor }, styles.userAvatarSmall]}
+                  onPress={() => handleOnRegioChange(user.coords?.lat, user.coords?.long)}  
+                >
                   <Text style={[styles.avatarText]}>
                     {user.name[0].toUpperCase()}
                   </Text>
-                </View>
+                </Pressable>
               );
             })}
           </View>
@@ -292,7 +313,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 26,
     fontWeight: "bold",
-    // textAlign: "center"
+    textAlign: "center"
   },
   markerBg: {
     width: 15,
@@ -308,7 +329,16 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 10,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
+  markerText: {
+    color: "white",
+    fontSize: 10,
+    fontWeight: "bold",
+    textAlign: "center"
+  }
 });
 
 export default Map;
