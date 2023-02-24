@@ -16,7 +16,7 @@ const CreateRoom = ({ navigation }: NavigationProps<Routes.CreateRoom>) => {
     };
 
   const handleCreateRoom = () => {
-    if(roomName && roomName.length > 6){
+    if(roomName && roomName.length >= 6){
       console.log(`Creating new room...`);
       createRoom({name: roomName})
       .unwrap()
