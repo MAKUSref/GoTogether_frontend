@@ -8,6 +8,8 @@ import {
   useDeleteHostMutation,
   useDeleteRequestedMutation,
   useDeleteUserMutation,
+  useFetchUserQuery,
+  useFetchUsersInfoFromRoomQuery,
   useGrantHostMutation,
   useLeaveRoomMutation,
 } from "../../../feature/api/apiSlice";
@@ -24,7 +26,6 @@ const UserCard = ({ userId, type, isButtonVisable, roomId }: UserCardProps) => {
   const navigation = useNavigation<any>();
 
   const sessionState = useAppSelector((state) => state.session);
-
   const [acceptRequest] = useAcceptUserMutation();
   const [grantHost] = useGrantHostMutation();
 
@@ -32,6 +33,10 @@ const UserCard = ({ userId, type, isButtonVisable, roomId }: UserCardProps) => {
   const [deleteHost] = useDeleteHostMutation();
   const [deleteUser] = useDeleteUserMutation();
   const [deleteRequested] = useDeleteRequestedMutation();
+  
+
+  const { data: user } = useFetchUserQuery({ userId });
+  // console.log(user?.user[0])
 
   const handleAcceptRequest = () => {
     acceptRequest({ roomId, userId }).catch(console.error);
@@ -122,7 +127,7 @@ const UserCard = ({ userId, type, isButtonVisable, roomId }: UserCardProps) => {
                 iconStyle={styles.userIcon}
               />
             )}
-            <Text>{userId.split("-")[0]}</Text>
+            <Text>{user?.user[0]?.name}</Text>
           </View>
           <View style={{ flexDirection: "row" }}>
             {isButtonVisable && getButton()}
