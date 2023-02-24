@@ -5,7 +5,7 @@ import { Coords, IUser, MyRoomsFetchResponse, RoomsFetchResponse } from "./types
 
 // dotenv.config();
 
-const API_URL = `http://192.168.154.82:4040/api`;
+const API_URL = `http://192.168.215.103:4040/api`;
 
 const USER_API_PATH = '/user';
 const USER_API_ROOMS = '/room';
@@ -55,6 +55,10 @@ const apiSlice = createApi({
         body: { ...coords }
       }),
       invalidatesTags: ['coords']
+    }),
+    fetchUser: builder.query<{user: IUser[]}, { userId: string, i?: number }>({
+      query: ({ userId, i }) => `${USER_API_PATH}/${userId}`,
+      providesTags: ["user"]
     }),
 
     // room
@@ -135,7 +139,14 @@ const apiSlice = createApi({
       }),
       invalidatesTags: ["room"]
     }),
-
+    leaveRoom: builder.mutation<{ message: string }, { roomId: string }>({
+      query: ({ roomId }) => ({
+        url: `${USER_API_ROOMS}/delete/self`,
+        method: 'DELETE',
+        body: { roomId }
+      }),
+      invalidatesTags: ["room"]
+    }),
 
   }),
   
@@ -146,6 +157,7 @@ export const {
   useGetStatusQuery,
 
   // user
+  useFetchUserQuery,
   useLoginMutation,
   useRegisterMutation,
   useUpdateCoordsMutation,
@@ -163,5 +175,6 @@ export const {
   useDeleteHostMutation,
   useAcceptUserMutation,
   useGrantHostMutation,
+  useLeaveRoomMutation,
 } = apiSlice;
 export default apiSlice;

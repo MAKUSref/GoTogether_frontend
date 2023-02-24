@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
-import { Button, Image } from "react-native-elements";
+import { Button, Image, Text } from "react-native-elements";
 import { Card, Input } from "@rneui/themed";
 import { useCreateRoomMutation } from "../../feature/api/apiSlice";
 import { NavigationProps, Routes } from "../../routing/types";
@@ -9,19 +9,30 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 const CreateRoom = ({ navigation }: NavigationProps<Routes.CreateRoom>) => {
   const [roomName, setRoomName] = useState<string>();
   const [createRoom] = useCreateRoomMutation();
+  const [errorMessage, setErrorMessage] = useState<string>();
+
+  const handleReturnToModeSelect = () => {
+      navigation.navigate(Routes.ModeSelect);
+    };
 
   const handleCreateRoom = () => {
-    if (roomName && roomName.length > 6) {
-      createRoom({ name: roomName })
-        .unwrap()
-        .then(() => {
+    if(roomName && roomName.length > 6){
+      console.log(`Creating new room...`);
+      createRoom({name: roomName})
+      .unwrap()
+      .then(()=>{
           console.log(`Room ${roomName} created`);
-        })
-        .catch((e) => {
+          // navigation.navigate(Routes.ModeSelect);
+          setErrorMessage("Room created succesfully")
+
+        }).catch((e)=>{
           console.error(`Room not created due to error: ${e}`);
-        });
+          setErrorMessage("Room not created")
+      });
+      }else{
+        setErrorMessage("Rooms name must be at least 6 characters long!")
+      }
     }
-  };
 
   return (
     <View style={styles.container}>
@@ -36,6 +47,7 @@ const CreateRoom = ({ navigation }: NavigationProps<Routes.CreateRoom>) => {
           />
           <Button title="Create own room" onPress={handleCreateRoom} />
         </Card>
+        <Text style={styles.errorMessage}>{errorMessage}</Text>
         <View style={{ width: "100%", height: "40%", marginVertical: 70 }}>
           <Image
             style={{ width: "100%", height: "100%" }}
@@ -84,6 +96,10 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     borderBottomRightRadius: 20,
   },
+  errorMessage: {
+    textAlign: "center",
+    color: "#aaa"
+  }
 });
 
 export default CreateRoom;

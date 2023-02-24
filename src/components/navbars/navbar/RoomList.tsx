@@ -5,7 +5,7 @@ import { useFetchMyRoomsQuery } from "../../../feature/api/apiSlice";
 import RoomCard from "./RoomCard";
 import { ROOM_USER_TYPE } from '../types';
 
-const Rooms = () => {
+const RoomList = () => {
   const [index, setIndex] = useState(0);
   const { data: roomsLists = { host: [], user: [], request: [] } } = useFetchMyRoomsQuery();
   return (
@@ -44,4 +44,4 @@ const Rooms = () => {
   );
 };
 
-export default Rooms;
+export default RoomList;

@@ -1,17 +1,15 @@
-import React, { useState } from "react";
-import { View, StyleSheet, ActivityIndicator } from "react-native";
+import React from "react";
+import { View, StyleSheet } from "react-native";
 import { Button, Image, Text } from "react-native-elements";
 import { Card } from "@rneui/themed";
-import {
-  useCreateRoomMutation,
-  useJoinToRoomMutation,
-} from "../../feature/api/apiSlice";
-import { useAppDispatch, useAppSelector } from "../../feature/hooks";
+import { useAppSelector } from "../../feature/hooks";
 import { logout } from "../../feature/session/sessionSlice";
 import { NavigationProps, Routes } from "../../routing/types";
 import Navbar from "../navbars/Navbar";
-import Rooms from "../navbars/navbar/Rooms";
+import Rooms from "../navbars/navbar/RoomList";
 import UserInfo from "../navbars/navbar/UserInfo";
+import RoomList from "../navbars/navbar/RoomList";
+import SpeechButton from "../map/SpeechButton";
 
 const ModeSelect = ({ navigation }: NavigationProps<Routes.ModeSelect>) => {
   const sessionState = useAppSelector((state) => state.session);
@@ -54,9 +52,11 @@ const ModeSelect = ({ navigation }: NavigationProps<Routes.ModeSelect>) => {
           </>
         )}
       </View>
+
+
       {sessionState.userId && (
         <Navbar
-          bottomSection={<Rooms />}
+          bottomSection={<RoomList />}
           topSection={
             <UserInfo
               userId={sessionState.userId}

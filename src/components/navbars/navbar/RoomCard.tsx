@@ -3,7 +3,7 @@ import { Card, Icon, Button} from '@rneui/themed';
 import { ROOM_USER_TYPE } from "../types";
 import { useNavigation } from "@react-navigation/native";
 import { Routes } from "../../../routing/types";
-import { useDeleteRequestedMutation } from "../../../feature/api/apiSlice";
+import { useDeleteRequestedMutation, useLeaveRoomMutation } from "../../../feature/api/apiSlice";
 import { useAppSelector } from "../../../feature/hooks";
 
 interface RoomButtonProps {
@@ -22,16 +22,13 @@ const RoomCard = ({name, host, type, roomPin, roomId}: RoomButtonProps) => {
   }
   const sessionState = useAppSelector((state) => state.session);
 
-  const [cancel] = useDeleteRequestedMutation();
+  const [leave] = useLeaveRoomMutation();
 
-  const handleCancel = () => {
+  const handleLeave = () => {
     if(sessionState.userId){
 
-      console.log({roomId, userId: sessionState.userId})
-
-      cancel({roomId, userId: sessionState.userId}).catch(console.log)
+      leave({ roomId }).then(console.log).catch(console.error)
     }
-
   }
 
   return (
@@ -51,15 +48,9 @@ const RoomCard = ({name, host, type, roomPin, roomId}: RoomButtonProps) => {
            <Text>{name}</Text>            
           </View>
           <View>
-            {
-              type === ROOM_USER_TYPE.host && <Button title='Leave' />
-            }
-            {
-              type === ROOM_USER_TYPE.user && <Button title='Leave' />
-            }
-            {
-              type === ROOM_USER_TYPE.request && <Button title='Cancel' onPress={handleCancel}/>
-            }
+
+
+            <Button title={type === ROOM_USER_TYPE.request ? 'Cancel' : 'Leave'} onPress={handleLeave}/>
           </View>
         </Pressable>
       </Card>
