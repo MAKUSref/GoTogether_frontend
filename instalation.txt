@@ -1,0 +1,4 @@
+1. Edytuj plik appConfig.ts wpisując adres ip servera
+2. npm install
+3. npm start
+4. Na urządzeniu mobilnym instalujemy aplikacje 'expo go' i skanujemy kod QR
