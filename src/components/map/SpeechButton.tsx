@@ -70,7 +70,7 @@ const SpeechButton = (users: SpeechButtonProps) => {
       }
     });
     Speech.speak(toTell, {
-      rate: 1,
+      rate: .8,
       language: "en-US",
       onDone: () => {
         setOpen(false);

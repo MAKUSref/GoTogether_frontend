@@ -14,6 +14,7 @@ import {
   useLeaveRoomMutation,
 } from "../../../feature/api/apiSlice";
 import { useAppSelector } from "../../../feature/hooks";
+import { IUser } from "../../../feature/api/types";
 
 interface UserCardProps {
   userId: string;
@@ -60,6 +61,15 @@ const UserCard = ({ userId, type, isButtonVisable, roomId }: UserCardProps) => {
     leaveRoom({roomId});
     navigation.navigate(Routes.ModeSelect);
     
+  }
+
+  const getLastTime = (user: IUser | undefined) =>{
+    
+    if( !user || !user.coords) return "";
+    const minutes = Math.round((Date.now() - user.coords.timestamp) / 60000);
+    if(minutes >= 1)
+    return `  ${minutes}m ago` 
+
   }
 
   const getButton = () => {
@@ -128,6 +138,7 @@ const UserCard = ({ userId, type, isButtonVisable, roomId }: UserCardProps) => {
               />
             )}
             <Text>{user?.user[0]?.name}</Text>
+            <Text style={{color: '#aaa', fontSize: 10}}>{getLastTime(user?.user[0])}</Text>
           </View>
           <View style={{ flexDirection: "row" }}>
             {isButtonVisable && getButton()}
